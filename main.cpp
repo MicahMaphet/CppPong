@@ -1,5 +1,8 @@
+#include <iostream>
 #include <raylib.h>
 #include <math.h>
+#include <string>
+#include <cstdio>
  
 struct Ball
 {
@@ -29,7 +32,6 @@ struct Paddle
 		DrawRectangleRec(GetRect(), WHITE);
 	}
 };
-
 
 int main() 
 {
@@ -99,6 +101,7 @@ int main()
 			CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()))
 		{
+			std::cout << ball.speedX << "\n";
 			ball.speedX *= -1;
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
@@ -111,7 +114,7 @@ int main()
 			ball.Draw();
 			leftPaddle.Draw();
 			rightPaddle.Draw();
-
+			DrawText(TextFormat("%f", ball.speedX), 100, 10, 20, BLUE);
 			DrawFPS(10, 10);
 		EndDrawing();
 
