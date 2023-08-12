@@ -114,10 +114,9 @@ int main()
 			ball.Draw();
 			leftPaddle.Draw();
 			rightPaddle.Draw();
-			DrawText(TextFormat("%f", ball.speedX), 100, 10, 20, BLUE);
+			DrawText(TextFormat("%f", abs(ball.speedX)), 100, 10, 20, BLUE);
 			DrawFPS(10, 10);
 		EndDrawing();
-
 	}
 
 	CloseWindow();
