@@ -26,7 +26,7 @@ struct Paddle
 
 	Rectangle GetRect()
 	{
-		return Rectangle{ x - width / 2, y - height / 2,  10, 100 };
+		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
 
 	void Draw()
@@ -51,14 +51,14 @@ int main()
 	Ball ball;
 	ball.x = GetScreenWidth() / 2.0f;
 	ball.y = GetScreenHeight() / 2.0f;
-	ball.radius= 5;
+	ball.radius = 5;
 	ball.speedX = 100;
 	ball.speedY = 300;
 
 	Paddle leftPaddle;
 	leftPaddle.x = 50;
 	leftPaddle.y = GetScreenHeight() / 2;
-	leftPaddle.width = 10;
+	leftPaddle.width = 15;
 	leftPaddle.height = 100;
 	leftPaddle.speed = 500;
 	leftPaddle.xDefault = leftPaddle.x;
@@ -67,7 +67,7 @@ int main()
 	Paddle rightPaddle;
 	rightPaddle.x = GetScreenWidth() - 50;
 	rightPaddle.y = GetScreenHeight() / 2;
-	rightPaddle.width = 10;
+	rightPaddle.width = 15;
 	rightPaddle.height = 100;
 	rightPaddle.speed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
@@ -101,7 +101,7 @@ int main()
 		}
 		if (IsKeyPressed(KEY_D))
 		{
-			leftPaddle.swingVel = 10;
+			leftPaddle.swingVel += 10;
 		}
 
 
@@ -115,13 +115,18 @@ int main()
 		}
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			rightPaddle.swingVel = -10;
+			rightPaddle.swingVel += -10;
 		}
 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
-			leftPaddle.GetRect()) || 
-			CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
-			rightPaddle.GetRect()))
+			leftPaddle.GetRect()) && ball.speedX < 0)
+		{
+			std::cout << ball.speedX << "\n";
+			ball.speedX *= -1;
+			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
+		}
+		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
+			rightPaddle.GetRect()) && ball.speedX > 0)
 		{
 			std::cout << ball.speedX << "\n";
 			ball.speedX *= -1;
