@@ -73,6 +73,8 @@ int main()
 	rightPaddle.xDefault = rightPaddle.x;
 	rightPaddle.swingVel = 0;
 
+	float swingForce = 0;
+
 
 	while (!WindowShouldClose())
 	{
@@ -101,7 +103,7 @@ int main()
 		}
 		if (IsKeyPressed(KEY_D))
 		{
-			leftPaddle.swingVel += 10;
+			leftPaddle.swingVel += 20;
 		}
 
 
@@ -115,7 +117,7 @@ int main()
 		}
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			rightPaddle.swingVel += -10;
+			rightPaddle.swingVel += -20;
 		}
 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
@@ -123,6 +125,8 @@ int main()
 		{
 			std::cout << ball.speedX << "\n";
 			ball.speedX *= -1;
+			ball.speedX += leftPaddle.swingVel;
+			swingForce = leftPaddle.swingVel;
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
@@ -130,6 +134,8 @@ int main()
 		{
 			std::cout << ball.speedX << "\n";
 			ball.speedX *= -1;
+			ball.speedX += rightPaddle.swingVel;
+			swingForce = rightPaddle.swingVel;
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 
@@ -141,7 +147,8 @@ int main()
 			leftPaddle.BringBack();
 			rightPaddle.Draw();
 			rightPaddle.BringBack();
-			DrawText(TextFormat("%f", abs(ball.speedX)), 100, 10, 20, BLUE);
+			DrawText(TextFormat("Ball Speed: %f", abs(ball.speedX)), 100, 10, 20, BLUE);
+			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE);
 			DrawFPS(10, 10);
 		EndDrawing();
 	}
