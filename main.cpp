@@ -21,6 +21,8 @@ struct Paddle
 	float x, y;
 	float speed;
 	float width, height;
+	float swingVel;
+	float xDefault;
 
 	Rectangle GetRect()
 	{
@@ -30,6 +32,14 @@ struct Paddle
 	void Draw()
 	{
 		DrawRectangleRec(GetRect(), WHITE);
+	}
+
+	// Brings the paddle back to the idle state after a swing
+	void BringBack()
+	{
+		swingVel += (xDefault - x) * 0.1;
+		swingVel = swingVel * 0.8;
+		x += swingVel;
 	}
 };
 
@@ -51,6 +61,8 @@ int main()
 	leftPaddle.width = 10;
 	leftPaddle.height = 100;
 	leftPaddle.speed = 500;
+	leftPaddle.xDefault = leftPaddle.x;
+	leftPaddle.swingVel = 0;
 
 	Paddle rightPaddle;
 	rightPaddle.x = GetScreenWidth() - 50;
@@ -58,6 +70,7 @@ int main()
 	rightPaddle.width = 10;
 	rightPaddle.height = 100;
 	rightPaddle.speed = 500;
+	rightPaddle.swingVel = 0;
 
 
 	while (!WindowShouldClose())
@@ -85,6 +98,11 @@ int main()
 		{
 			leftPaddle.y += leftPaddle.speed * GetFrameTime();
 		}
+		if (IsKeyPressed(KEY_D))
+		{
+			leftPaddle.swingVel = 10;
+		}
+
 
 		if (IsKeyDown(KEY_UP))
 		{
@@ -106,13 +124,12 @@ int main()
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 
-
-
 		BeginDrawing();
 			ClearBackground(BLACK);
 
 			ball.Draw();
 			leftPaddle.Draw();
+			leftPaddle.BringBack();
 			rightPaddle.Draw();
 			DrawText(TextFormat("%f", abs(ball.speedX)), 100, 10, 20, BLUE);
 			DrawFPS(10, 10);
