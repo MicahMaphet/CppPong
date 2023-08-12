@@ -70,6 +70,7 @@ int main()
 	rightPaddle.width = 10;
 	rightPaddle.height = 100;
 	rightPaddle.speed = 500;
+	rightPaddle.xDefault = rightPaddle.x;
 	rightPaddle.swingVel = 0;
 
 
@@ -108,10 +109,13 @@ int main()
 		{
 			rightPaddle.y -= rightPaddle.speed * GetFrameTime();
 		}
-
 		if (IsKeyDown(KEY_DOWN))
 		{
 			rightPaddle.y += rightPaddle.speed * GetFrameTime();
+		}
+		if (IsKeyPressed(KEY_LEFT))
+		{
+			rightPaddle.swingVel = -10;
 		}
 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
@@ -131,6 +135,7 @@ int main()
 			leftPaddle.Draw();
 			leftPaddle.BringBack();
 			rightPaddle.Draw();
+			rightPaddle.BringBack();
 			DrawText(TextFormat("%f", abs(ball.speedX)), 100, 10, 20, BLUE);
 			DrawFPS(10, 10);
 		EndDrawing();
