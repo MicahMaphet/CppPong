@@ -68,7 +68,7 @@ int main()
 	ball.speedY = 300;
 	// Initialize the leftPaddle member
 	Paddle leftPaddle;
-	leftPaddle.x = 50;
+	leftPaddle.x = 125;
 	leftPaddle.y = GetScreenHeight() / 2;
 	leftPaddle.width = 15;
 	leftPaddle.height = 100;
@@ -77,7 +77,7 @@ int main()
 	leftPaddle.swingVel = 0;
 	// Initialize the rightPaddle member
 	Paddle rightPaddle;
-	rightPaddle.x = GetScreenWidth() - 50;
+	rightPaddle.x = GetScreenWidth() - 125;
 	rightPaddle.y = GetScreenHeight() / 2;
 	rightPaddle.width = 15;
 	rightPaddle.height = 100;
@@ -121,6 +121,11 @@ int main()
 		{
 			leftPaddle.swingVel += 20;
 		}
+		// Hold paddle back
+		if (IsKeyDown(KEY_A))
+		{
+			leftPaddle.swingVel = -10;
+		}
 
 		// Move right paddle up
 		if (IsKeyDown(KEY_UP))
@@ -135,7 +140,12 @@ int main()
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			rightPaddle.swingVel += -20;
+			rightPaddle.swingVel -= 20;
+		}
+		// Hold paddle back
+		if (IsKeyDown(KEY_RIGHT))
+		{
+			rightPaddle.swingVel = 10;
 		}
 
 		// Left paddle and ball collision 
@@ -146,7 +156,7 @@ int main()
 			ball.speedX *= -1;
 			ball.speedX += leftPaddle.swingVel;
 			swingForce = leftPaddle.swingVel;
-			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
+			//ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
@@ -156,7 +166,7 @@ int main()
 			ball.speedX *= -1;
 			ball.speedX += rightPaddle.swingVel;
 			swingForce = rightPaddle.swingVel;
-			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
+			//ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 
 		BeginDrawing(); // Begin drawing the window
