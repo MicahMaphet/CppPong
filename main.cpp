@@ -15,6 +15,12 @@ struct Ball
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 };
+/**
+  * This structure is used for the two paddles, is has the vector space data,
+  * height, width, swingVel (which is used for determining how fast the
+  * paddle is moving in the x-axis), and xDefault (which is where the paddle
+  * oscilates back twoards in the x-axis)
+  */
 
 struct Paddle
 {
@@ -23,17 +29,16 @@ struct Paddle
 	float width, height;
 	float swingVel;
 	float xDefault;
-
+	// Returns, the height, width, x, and y of the rectangle
 	Rectangle GetRect()
 	{
 		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
-
+	// Draws the rectangle of the paddle
 	void Draw()
 	{
 		DrawRectangleRec(GetRect(), WHITE);
 	}
-
 	// Brings the paddle back to the idle state after a swing
 	void BringBack()
 	{
