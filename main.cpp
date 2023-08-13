@@ -3,20 +3,25 @@
 #include <math.h>
 #include <string>
 #include <cstdio>
- 
+
+/**
+  * This is the structure of the ball, it has the vector space, x and y
+  * speed, and radius.
+  */
 struct Ball
 {
 	float x, y;
 	float speedX, speedY;
 	float radius;
 
+	// Render the circle
 	void Draw()
 	{
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 };
 /**
-  * This structure is used for the two paddles, is has the vector space data,
+  * This structure is used for the two paddles, it has the vector space,
   * height, width, swingVel (which is used for determining how fast the
   * paddle is moving in the x-axis), and xDefault (which is where the paddle
   * oscilates back twoards in the x-axis)
@@ -49,17 +54,19 @@ struct Paddle
 };
 
 int main() 
-{
+{	
+	// Initializing the window, dimensions 800x600, and named Pong
 	InitWindow(800, 600, "Pong");
+	// Stops the render rate from exceding the render rate of the device
 	SetWindowState(FLAG_VSYNC_HINT);
-
+	// Initialize the ball member
 	Ball ball;
 	ball.x = GetScreenWidth() / 2.0f;
 	ball.y = GetScreenHeight() / 2.0f;
 	ball.radius = 5;
 	ball.speedX = 100;
 	ball.speedY = 300;
-
+	// Initialize the leftPaddle member
 	Paddle leftPaddle;
 	leftPaddle.x = 50;
 	leftPaddle.y = GetScreenHeight() / 2;
@@ -68,7 +75,7 @@ int main()
 	leftPaddle.speed = 500;
 	leftPaddle.xDefault = leftPaddle.x;
 	leftPaddle.swingVel = 0;
-
+	// Initialize the rightPaddle member
 	Paddle rightPaddle;
 	rightPaddle.x = GetScreenWidth() - 50;
 	rightPaddle.y = GetScreenHeight() / 2;
@@ -77,54 +84,61 @@ int main()
 	rightPaddle.speed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
 	rightPaddle.swingVel = 0;
-
+	// The most recent swing force on impact of the ball
 	float swingForce = 0;
 
-
+	// Game loop until the window is clozed
 	while (!WindowShouldClose())
 	{
+		// Move the ball by the set speed in x and y, multipied by frame time
 		ball.x += ball.speedX * GetFrameTime();
 		ball.y += ball.speedY * GetFrameTime();
-
+		// Top screen collision
 		if (ball.y < 0)
 		{
 			ball.y = 0;
 			ball.speedY *= -1;
 		}
-
+		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
 			ball.y = GetScreenHeight();
 			ball.speedY *= -1;
 		}
 
+		// Move left paddle up
 		if (IsKeyDown(KEY_W))
 		{
 			leftPaddle.y -= leftPaddle.speed * GetFrameTime();
 		}
+		// Move left paddle down
 		if (IsKeyDown(KEY_S))
 		{
 			leftPaddle.y += leftPaddle.speed * GetFrameTime();
 		}
+		// Swing the paddle
 		if (IsKeyPressed(KEY_D))
 		{
 			leftPaddle.swingVel += 20;
 		}
 
-
+		// Move right paddle up
 		if (IsKeyDown(KEY_UP))
 		{
 			rightPaddle.y -= rightPaddle.speed * GetFrameTime();
 		}
+		// Move right paddle down
 		if (IsKeyDown(KEY_DOWN))
 		{
 			rightPaddle.y += rightPaddle.speed * GetFrameTime();
 		}
+		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
 			rightPaddle.swingVel += -20;
 		}
 
+		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.speedX < 0)
 		{
@@ -134,6 +148,7 @@ int main()
 			swingForce = leftPaddle.swingVel;
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
+		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && ball.speedX > 0)
 		{
@@ -144,21 +159,23 @@ int main()
 			ball.speedX += fabsf(ball.speedX) / ball.speedX * 10.0f;
 		}
 
-		BeginDrawing();
-			ClearBackground(BLACK);
+		BeginDrawing(); // Begin drawing the window
+			ClearBackground(BLACK); // Make the background colour black
 
-			ball.Draw();
-			leftPaddle.Draw();
-			leftPaddle.BringBack();
-			rightPaddle.Draw();
-			rightPaddle.BringBack();
+			ball.Draw(); // Render the ball
+			leftPaddle.Draw(); // Render the left paddle
+			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
+			rightPaddle.Draw(); // Render the right paddle
+			rightPaddle.BringBack(); // Oscilate the right padle
+			// Displays the speed of the ball
 			DrawText(TextFormat("Ball Speed: %f", abs(ball.speedX)), 100, 10, 20, BLUE);
+			// Displays the speed of the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE);
-			DrawFPS(10, 10);
-		EndDrawing();
+			DrawFPS(10, 10); // Displays the fps
+		EndDrawing(); // Finish frame
 	}
 
-	CloseWindow();
+	CloseWindow(); // When the game loop is done, close the window
 
 	return 0;
 }
