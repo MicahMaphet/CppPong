@@ -3,6 +3,7 @@
 #include <math.h>
 #include <string>
 #include <cstdio>
+#include "Moveable.cpp"
 
 /**
   * This is the structure of the ball, it has the vector space, x and y
@@ -50,6 +51,14 @@ struct Paddle
 		swingVel += (xDefault - x) * 0.1;
 		swingVel = swingVel * 0.8;
 		x += swingVel;
+	}
+};
+
+class Particle : public Moveable {
+	Particle(int _x, int _y, int _speed) {
+		x = _x;
+		y = _y;
+		speed = _speed;
 	}
 };
 
