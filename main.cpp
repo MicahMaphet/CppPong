@@ -54,8 +54,10 @@ struct Paddle
 	}
 };
 
-class Particle : public Moveable {
-	Particle(int _x, int _y, int _speed) {
+class Particle : public Moveable 
+{
+	Particle(int _x, int _y, int _speed) 
+	{
 		x = _x;
 		y = _y;
 		speed = _speed;
