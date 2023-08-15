@@ -3,17 +3,17 @@
 #include <math.h>
 #include <string>
 #include <cstdio>
-#include "Moveables.cpp"
 
 /**
   * This is the structure of the ball, it has the vector space, x and y
   * speed, and radius.
   */
-struct Ball
+class Ball
 {
-	float x, y;
-	float xSpeed, ySpeed;
-	float radius;
+	public:
+		float x, y;
+		float xSpeed, ySpeed;
+		float radius;
 
 	// Render the circle
 	void Draw()
@@ -21,20 +21,21 @@ struct Ball
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 };
+
 /**
   * This structure is used for the two paddles, it has the vector space,
   * height, width, xSpeed (which is used for determining how fast the
   * paddle is moving in the x-axis), and xDefault (which is where the paddle
   * oscilates back twoards in the x-axis)
   */
-
-struct Paddle
-{
-	float x, y;
-	float speed;
-	float width, height;
-	float xSpeed;
-	float xDefault;
+class Paddle
+{	
+	public:
+		float x, y;
+		float speed;
+		float width, height;
+		float xSpeed, ySpeed;
+		float xDefault;
 	// Returns, the height, width, x, and y of the rectangle
 	Rectangle GetRect()
 	{
@@ -54,9 +55,26 @@ struct Paddle
 	}
 };
 
-class Particle : public Moveable 
+class Particle 
 {
+public:
+	float x, y;
+	float xSpeed, ySpeed;
+	float radius;
 
+	// Render the circle
+	void Draw()
+	{
+		DrawCircle((int)x, (int)y, radius, WHITE);
+	}
+	void Launch(int sped)
+	{
+		xSpeed = sped;
+	}
+	void ContinueLaunch() 
+	{
+		xSpeed -= fabsf(xSpeed) / xSpeed;
+	}
 };
 
 int main() 
@@ -65,6 +83,7 @@ int main()
 	InitWindow(800, 600, "Pong");
 	// Stops the render rate from exceding the render rate of the device
 	SetWindowState(FLAG_VSYNC_HINT);
+
 	// Initialize the ball member
 	Ball ball;
 	ball.x = GetScreenWidth() / 2.0f;
@@ -72,6 +91,7 @@ int main()
 	ball.radius = 5;
 	ball.xSpeed = 100;
 	ball.ySpeed = 300;
+
 	// Initialize the leftPaddle member
 	Paddle leftPaddle;
 	leftPaddle.x = 125;
@@ -81,6 +101,7 @@ int main()
 	leftPaddle.speed = 500;
 	leftPaddle.xDefault = leftPaddle.x; 
 	leftPaddle.xSpeed = 0;
+
 	// Initialize the rightPaddle member
 	Paddle rightPaddle;
 	rightPaddle.x = GetScreenWidth() - 125.0f;
@@ -92,6 +113,15 @@ int main()
 	rightPaddle.xSpeed = 0;
 	// The most recent swing force on impact of the ball
 	float swingForce = 0;
+
+	Particle particles[10];
+
+	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
+		particles[i].radius = 10;
+	}
+	
+
+
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -162,8 +192,8 @@ int main()
 			ball.xSpeed *= -1;
 			ball.xSpeed += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
-			//ball.xSpeed += fabsf(ball.xSpeed) / ball.xSpeed * 10.0f;
 		}
+
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && ball.xSpeed > 0)
@@ -172,9 +202,13 @@ int main()
 			ball.xSpeed *= -1;
 			ball.xSpeed += rightPaddle.xSpeed;
 			swingForce = rightPaddle.xSpeed;
-			//ball.xSpeed += fabsf(ball.xSpeed) / ball.xSpeed * 10.0f;
+			particles[0].x = ball.x;
+			particles[0].y = ball.y;
 		}
-
+		// Loop through all of the particles and draw them
+		for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
+			particles[i].Draw();
+		}
 		BeginDrawing(); // Begin drawing the window
 			ClearBackground(BLACK); // Make the background colour black
 
@@ -183,6 +217,8 @@ int main()
 			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
 			rightPaddle.Draw(); // Render the right paddle
 			rightPaddle.BringBack(); // Oscilate the right padle
+
+
 			// Displays theySpeedof the ball
 			DrawText(TextFormat("Ball Speed: %f", abs(ball.xSpeed)), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
