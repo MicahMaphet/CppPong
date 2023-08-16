@@ -61,6 +61,8 @@ public:
 	float x, y;
 	float xSpeed, ySpeed;
 	float radius;
+	bool direction; // direction is a boolean, 1 is right, 0 is left
+	int launchState;
 
 	// Render the circle
 	void Draw()
@@ -69,13 +71,37 @@ public:
 	}
 	void Launch(int sped)
 	{
-		xSpeed = sped;
+		//xSpeed = sped;
 	}
 	void ContinueLaunch() 
 	{
-		xSpeed -= fabsf(xSpeed) / xSpeed;
+		if (launchState > 0) {
+			xSpeed -= (fabsf(xSpeed) / xSpeed) / 100;
+			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
+			launchState--;
+			std::cout << "\n" << x << " " << y << " " << xSpeed * GetFrameTime();
+		}
 	}
 };
+
+// Returns a list of all of the active particles
+int* ActiveParticles(Particle particles[]) {
+	int activeParticles[10];
+	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
+		activeParticles[i] = (particles[i].launchState) / (particles[i].launchState);
+	}
+	return activeParticles;
+}
+
+int FirstAvailableParticle(Particle particles[]) {
+	ActiveParticles(particles);
+	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
+		if (ActiveParticles(particles)) {
+			return i;
+		}
+	}
+	return 0;
+}
 
 int main() 
 {	
@@ -117,11 +143,9 @@ int main()
 	Particle particles[10];
 
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-		particles[i].radius = 10;
+		particles[i].radius = 5;
+		particles[i].launchState = 0;
 	}
-	
-
-
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -202,12 +226,17 @@ int main()
 			ball.xSpeed *= -1;
 			ball.xSpeed += rightPaddle.xSpeed;
 			swingForce = rightPaddle.xSpeed;
+
 			particles[0].x = ball.x;
 			particles[0].y = ball.y;
+			particles[0].launchState = 500;
+			particles[0].direction = 0; // left
+			std::cout << particles[0].x << " " << particles[0].y;
 		}
 		// Loop through all of the particles and draw them
 		for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
 			particles[i].Draw();
+			particles[i].ContinueLaunch();
 		}
 		BeginDrawing(); // Begin drawing the window
 			ClearBackground(BLACK); // Make the background colour black
@@ -216,8 +245,7 @@ int main()
 			leftPaddle.Draw(); // Render the left paddle
 			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
 			rightPaddle.Draw(); // Render the right paddle
-			rightPaddle.BringBack(); // Oscilate the right padle
-
+			rightPaddle.BringBack(); // Oscilate the right paddle
 
 			// Displays theySpeedof the ball
 			DrawText(TextFormat("Ball Speed: %f", abs(ball.xSpeed)), 100, 10, 20, BLUE);
