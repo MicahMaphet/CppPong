@@ -69,15 +69,13 @@ public:
 	{
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
-	void Launch(int sped)
-	{
-		//xSpeed = sped;
-	}
+
 	void ContinueLaunch() 
 	{
 		if (launchState > 0) {
 			xSpeed -= (fabsf(xSpeed) / xSpeed) / 100;
 			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
+			y += ySpeed * GetFrameTime();
 			launchState--;
 			Draw();
 		}
@@ -118,18 +116,24 @@ int main()
 	rightPaddle.speed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
 	rightPaddle.xSpeed = 0;
+
 	// The most recent swing force on impact of the ball
 	float swingForce = 0;
 
-	Particle particles[20];
+	Particle particles[20]; // an array of all the particles
+	// how many particles there are
 	const int particleCount = sizeof(particles) / sizeof(Particle);
-
+	// Loop through all of the particles and assign default values
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
 		particles[i].radius = 5;
 		particles[i].launchState = 0;
 	}
-
+	// This is where the available index's particles are stored
 	int firstAvailableParticle = 0;
+	// Particle count for the number of particles that launch of a paddle on collision
+	int particlesOnHit = 5;
+	// The y axis spread of the particles on collision of the paddle
+	int particleDiffusion = 50;
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -201,16 +205,22 @@ int main()
 			ball.xSpeed += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
 
-			for (int i = 0; i < particleCount; i++) {
-				// Check if the launch stat of the particle has been finished
-				if (particles[i].launchState == 0) {
-					firstAvailableParticle = i;
+			// Loop through all of the particles that launch on impact
+			for (int i = 0; i < particlesOnHit; i++) { 
+				for (int j = 0; j < particleCount; j++) { 
+					// Check if the launch stat of the particle has been finished
+					if (particles[j].launchState == 0) { 
+						firstAvailableParticle = j; 
+					} 
 				}
+
+				particles[firstAvailableParticle].x = ball.x; 
+				particles[firstAvailableParticle].y = ball.y; 
+				particles[firstAvailableParticle].direction = 1; // right 
+				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
+				std::cout << "\n" << ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
+				particles[firstAvailableParticle].launchState = 500;
 			}
-			particles[firstAvailableParticle].x = ball.x;
-			particles[firstAvailableParticle].y = ball.y;
-			particles[firstAvailableParticle].direction = 1; // right
-			particles[firstAvailableParticle].launchState = 500;
 		}
 
 		// Right paddle and ball collision
@@ -220,17 +230,23 @@ int main()
 			ball.xSpeed *= -1;
 			ball.xSpeed += rightPaddle.xSpeed;
 			swingForce = rightPaddle.xSpeed;
-			for (int i = 0; i < particleCount; i++) {
-				// Check if the launch stat of the particle has been finished
-				if (particles[i].launchState == 0) {
-					firstAvailableParticle = i;
-				}
-			}
 
-			particles[firstAvailableParticle].x = ball.x;
-			particles[firstAvailableParticle].y = ball.y;
-			particles[firstAvailableParticle].direction = 0; // left
-			particles[firstAvailableParticle].launchState = 500;
+			// Loop through all of the particles that launch on impact
+			for (int i = 0; i < particlesOnHit; i++) {
+				for (int j = 0; j < particleCount; j++) {
+					// Check if the launch stat of the particle has been finished
+					if (particles[j].launchState == 0) {
+						firstAvailableParticle = j;
+					}
+				}
+
+				particles[firstAvailableParticle].x = ball.x;
+				particles[firstAvailableParticle].y = ball.y;
+				particles[firstAvailableParticle].direction = 0; // left
+				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
+				std::cout << "\n" << ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
+				particles[firstAvailableParticle].launchState = 500;
+			}
 		}
 		// Loop through all of the particles and draw them
 		for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
