@@ -79,29 +79,10 @@ public:
 			xSpeed -= (fabsf(xSpeed) / xSpeed) / 100;
 			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
 			launchState--;
-			std::cout << "\n" << x << " " << y << " " << xSpeed * GetFrameTime();
+			Draw();
 		}
 	}
 };
-
-// Returns a list of all of the active particles
-int* ActiveParticles(Particle particles[]) {
-	int activeParticles[10];
-	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-		activeParticles[i] = (particles[i].launchState) / (particles[i].launchState);
-	}
-	return activeParticles;
-}
-
-int FirstAvailableParticle(Particle particles[]) {
-	ActiveParticles(particles);
-	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-		if (ActiveParticles(particles)) {
-			return i;
-		}
-	}
-	return 0;
-}
 
 int main() 
 {	
@@ -140,12 +121,15 @@ int main()
 	// The most recent swing force on impact of the ball
 	float swingForce = 0;
 
-	Particle particles[10];
+	Particle particles[20];
+	const int particleCount = sizeof(particles) / sizeof(Particle);
 
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
 		particles[i].radius = 5;
 		particles[i].launchState = 0;
 	}
+
+	int firstAvailableParticle = 0;
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -208,34 +192,48 @@ int main()
 			rightPaddle.xSpeed = 10;
 		}
 
+
 		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.xSpeed < 0)
 		{
-			std::cout << ball.xSpeed << "\n";
 			ball.xSpeed *= -1;
 			ball.xSpeed += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
+
+			for (int i = 0; i < particleCount; i++) {
+				// Check if the launch stat of the particle has been finished
+				if (particles[i].launchState == 0) {
+					firstAvailableParticle = i;
+				}
+			}
+			particles[firstAvailableParticle].x = ball.x;
+			particles[firstAvailableParticle].y = ball.y;
+			particles[firstAvailableParticle].direction = 1; // right
+			particles[firstAvailableParticle].launchState = 500;
 		}
 
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && ball.xSpeed > 0)
 		{
-			std::cout << ball.xSpeed << "\n";
 			ball.xSpeed *= -1;
 			ball.xSpeed += rightPaddle.xSpeed;
 			swingForce = rightPaddle.xSpeed;
+			for (int i = 0; i < particleCount; i++) {
+				// Check if the launch stat of the particle has been finished
+				if (particles[i].launchState == 0) {
+					firstAvailableParticle = i;
+				}
+			}
 
-			particles[0].x = ball.x;
-			particles[0].y = ball.y;
-			particles[0].launchState = 500;
-			particles[0].direction = 0; // left
-			std::cout << particles[0].x << " " << particles[0].y;
+			particles[firstAvailableParticle].x = ball.x;
+			particles[firstAvailableParticle].y = ball.y;
+			particles[firstAvailableParticle].direction = 0; // left
+			particles[firstAvailableParticle].launchState = 500;
 		}
 		// Loop through all of the particles and draw them
 		for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-			particles[i].Draw();
 			particles[i].ContinueLaunch();
 		}
 		BeginDrawing(); // Begin drawing the window
