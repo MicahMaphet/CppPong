@@ -120,7 +120,7 @@ int main()
 	// The most recent swing force on impact of the ball
 	float swingForce = 0;
 
-	Particle particles[20]; // an array of all the particles
+	Particle particles[100]; // an array of all the particles
 	// how many particles there are
 	const int particleCount = sizeof(particles) / sizeof(Particle);
 	// Loop through all of the particles and assign default values
@@ -218,8 +218,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y; 
 				particles[firstAvailableParticle].direction = 1; // right 
 				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
-				std::cout << "\n" << ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
-				particles[firstAvailableParticle].launchState = 500;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (swingForce) * 50;
 			}
 		}
 
@@ -244,8 +243,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y;
 				particles[firstAvailableParticle].direction = 0; // left
 				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
-				std::cout << "\n" << ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
-				particles[firstAvailableParticle].launchState = 500;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (-swingForce) * 50;
 			}
 		}
 		// Loop through all of the particles and draw them
