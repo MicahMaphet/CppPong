@@ -86,7 +86,7 @@ public:
 int main() 
 {	
 	// Initializing the window, dimensions 800x600, and named Pong
-	InitWindow(800, 600, "Pong");
+	InitWindow(1000, 600, "Pong");
 	// Stops the render rate from exceding the render rate of the device
 	SetWindowState(FLAG_VSYNC_HINT);
 
@@ -101,9 +101,9 @@ int main()
 
 	// Initialize the leftPaddle member
 	Paddle leftPaddle;
-	leftPaddle.x = 125;
+	leftPaddle.x = 225;
 	leftPaddle.y = GetScreenHeight() / 2.0f;
-	leftPaddle.width = 15;
+	leftPaddle.width = 50;
 	leftPaddle.height = 100;
 	leftPaddle.speed = 500;
 	leftPaddle.xDefault = leftPaddle.x; 
@@ -111,9 +111,9 @@ int main()
 
 	// Initialize the rightPaddle member
 	Paddle rightPaddle;
-	rightPaddle.x = GetScreenWidth() - 125.0f;
+	rightPaddle.x = GetScreenWidth() - 225.0f;
 	rightPaddle.y = GetScreenHeight() / 2.0f;
-	rightPaddle.width = 15;
+	rightPaddle.width = 50;
 	rightPaddle.height = 100;
 	rightPaddle.speed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
@@ -143,7 +143,7 @@ int main()
 		// Move the ball by the setySpeedin x and y, multipied by frame time
 		ball.x += ball.xSpeed * GetFrameTime();
 		ball.y += ball.ySpeed * GetFrameTime();
-
+		// Friction for the ball
 		ball.xSpeed -= (abs(ball.xSpeed) / ball.xSpeed) * ball.friction;
 
 		// Top screen collision
@@ -172,12 +172,12 @@ int main()
 		// Swing the paddle
 		if (IsKeyPressed(KEY_D))
 		{
-			leftPaddle.xSpeed += 20;
+			leftPaddle.xSpeed += 50;
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_A))
 		{
-			leftPaddle.xSpeed = -10;
+			leftPaddle.xSpeed = -20;
 		}
 
 		// Move right paddle up
@@ -193,12 +193,12 @@ int main()
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			rightPaddle.xSpeed -= 20;
+			rightPaddle.xSpeed -= 50;
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_RIGHT))
 		{
-			rightPaddle.xSpeed = 10;
+			rightPaddle.xSpeed = 20;
 		}
 
 
