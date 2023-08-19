@@ -5,7 +5,7 @@
 #include <cstdio>
 
 /**
-  * This is the structure of the ball, it has the vector space, x and y
+  * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
   */
 class Ball
@@ -24,7 +24,7 @@ class Ball
 };
 
 /**
-  * This structure is used for the two paddles, it has the vector space,
+  * This class is used for the two paddles, it has the vector space,
   * height, width, xSpeed (which is used for determining how fast the
   * paddle is moving in the x-axis), and xDefault (which is where the paddle
   * oscilates back twoards in the x-axis)
@@ -56,8 +56,12 @@ class Paddle
 	}
 };
 
-class Particle 
-{
+/**
+  * These particles launch off the paddle at the point of impact of the ball.
+  * The particles shoot off faster the faster the paddle is moving at the 
+  * point of impact of the ball.
+  */
+class Particle {
 public:
 	float x, y;
 	float xSpeed, ySpeed;
@@ -70,9 +74,9 @@ public:
 	{
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
-
-	void ContinueLaunch() 
-	{
+	// Carry out the launch
+	void ContinueLaunch() {
+		// If the launch faze has not been completed
 		if (launchState > 0) {
 			xSpeed -= (fabsf(xSpeed) / xSpeed) / 100;
 			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
