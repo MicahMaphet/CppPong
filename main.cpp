@@ -94,10 +94,11 @@ int main()
 	Ball ball;
 	ball.x = GetScreenWidth() / 2.0f;
 	ball.y = GetScreenHeight() / 2.0f;
-	ball.radius = 5;
+	ball.radius = 10;
 	ball.xSpeed = 100;
 	ball.ySpeed = 300;
 	ball.friction = 0.025;
+	Ball ballInit = ball;
 
 	// Initialize the leftPaddle member
 	Paddle leftPaddle;
@@ -108,6 +109,8 @@ int main()
 	leftPaddle.speed = 500;
 	leftPaddle.xDefault = leftPaddle.x; 
 	leftPaddle.xSpeed = 0;
+	// Save the paddle for restarting the game
+	Paddle leftPaddleInit = leftPaddle;
 
 	// Initialize the rightPaddle member
 	Paddle rightPaddle;
@@ -118,6 +121,8 @@ int main()
 	rightPaddle.speed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
 	rightPaddle.xSpeed = 0;
+	// Save the paddle for restarting the game
+	Paddle rightPaddleInit = rightPaddle;
 
 	// The most recent swing force on impact of the ball
 	float swingForce = 0;
@@ -127,7 +132,7 @@ int main()
 	const int particleCount = sizeof(particles) / sizeof(Particle);
 	// Loop through all of the particles and assign default values
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-		particles[i].radius = 5;
+		particles[i].radius = 2;
 		particles[i].launchState = 0;
 	}
 	// This is where the available index's particles are stored
@@ -157,6 +162,17 @@ int main()
 		{
 			ball.y = (float) GetScreenHeight();
 			ball.ySpeed *= -1;
+		}
+
+		/* 
+		 * If the ball goes off the screen on the left size, reset the ball,
+		 * and the left and right paddle.
+		 */git 
+		if (ball.x < 0 || ball.x > GetScreenWidth()) {
+			// This resets to all the initialized vairables
+			ball = ballInit;
+			leftPaddle = leftPaddleInit;
+			rightPaddle = rightPaddleInit;
 		}
 
 		// Move left paddle up
