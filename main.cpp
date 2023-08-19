@@ -14,6 +14,7 @@ class Ball
 		float x, y;
 		float xSpeed, ySpeed;
 		float radius;
+		float friction;
 
 	// Render the circle
 	void Draw()
@@ -96,6 +97,7 @@ int main()
 	ball.radius = 5;
 	ball.xSpeed = 100;
 	ball.ySpeed = 300;
+	ball.friction = 0.025;
 
 	// Initialize the leftPaddle member
 	Paddle leftPaddle;
@@ -141,6 +143,9 @@ int main()
 		// Move the ball by the setySpeedin x and y, multipied by frame time
 		ball.x += ball.xSpeed * GetFrameTime();
 		ball.y += ball.ySpeed * GetFrameTime();
+
+		ball.xSpeed -= (abs(ball.xSpeed) / ball.xSpeed) * ball.friction;
+
 		// Top screen collision
 		if (ball.y < 0)
 		{
