@@ -143,13 +143,13 @@ int main()
 	const int particleCount = sizeof(particles) / sizeof(Particle);
 	// Loop through all of the particles and assign default values
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-		particles[i].radius = 2;
+		particles[i].radius = 3;
 		particles[i].launchState = 0;
 	}
 	// This is where the available index's particles are stored
 	int firstAvailableParticle = 0;
 	// Particle count for the number of particles that launch of a paddle on collision
-	int particlesOnHit = 10;
+	int particlesOnHit = 15;
 	// The y axis spread of the particles on collision of the paddle
 	int particleDiffusion = 50;
 
