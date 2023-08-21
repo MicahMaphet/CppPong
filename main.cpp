@@ -82,6 +82,13 @@ public:
 			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
 			y += ySpeed * GetFrameTime();
 			launchState--;
+			/**
+			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
+			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
+			  */
+			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
+				launchState = 0; // end launch sequence
+			}
 			Draw();
 		}
 	}
