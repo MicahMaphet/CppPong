@@ -142,7 +142,7 @@ int main()
 	// This is where the available index's particles are stored
 	int firstAvailableParticle = 0;
 	// Particle count for the number of particles that launch of a paddle on collision
-	int particlesOnHit = 5;
+	int particlesOnHit = 10;
 	// The y axis spread of the particles on collision of the paddle
 	int particleDiffusion = 50;
 
@@ -171,7 +171,7 @@ int main()
 		/* 
 		 * If the ball goes off the screen on the left size, reset the ball,
 		 * and the left and right paddle.
-		 */git 
+		 */
 		if (ball.x < 0 || ball.x > GetScreenWidth()) {
 			// This resets to all the initialized vairables
 			ball = ballInit;
