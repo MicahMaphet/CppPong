@@ -78,8 +78,9 @@ public:
 	void ContinueLaunch() {
 		// If the launch faze has not been completed
 		if (launchState > 0) {
-			xSpeed -= (fabsf(xSpeed) / xSpeed) / 100;
-			x += launchState * GetFrameTime() / 5 * ((direction * 2) - 1);
+			xSpeed = (sqrt((launchState * launchState) + (ySpeed * ySpeed)) - abs(ySpeed)) / 5 * ((direction * 2) - 1);
+
+			x += xSpeed * GetFrameTime();
 			y += ySpeed * GetFrameTime();
 			launchState--;
 			/**
@@ -239,8 +240,9 @@ int main()
 
 			// Loop through all of the particles that launch on impact
 			for (int i = 0; i < particlesOnHit; i++) { 
+				// Find the first available particle, first particle in the particles arrray that is not in use
 				for (int j = 0; j < particleCount; j++) { 
-					// Check if the launch stat of the particle has been finished
+					// Check if the launch state of the particle has been finished
 					if (particles[j].launchState == 0) { 
 						firstAvailableParticle = j; 
 					} 
@@ -251,6 +253,20 @@ int main()
 				particles[firstAvailableParticle].direction = 1; // right 
 				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (swingForce) * 50;
+				std::cout << 
+					sqrt(
+					(
+						(particles[firstAvailableParticle].launchState)
+						* (particles[firstAvailableParticle].launchState)
+						)
+
+					+ (
+						(particles[firstAvailableParticle].ySpeed)
+						* particles[firstAvailableParticle].ySpeed
+						)
+				)
+					- abs(particles[firstAvailableParticle].ySpeed)
+					<< "\n";
 			}
 		}
 
