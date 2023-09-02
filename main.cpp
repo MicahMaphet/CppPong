@@ -259,9 +259,6 @@ int main()
 				particles[firstAvailableParticle].y = ball.y; 
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * 0.25;
-
-				std::cout << "\n" << particles[firstAvailableParticle].direction
-					      << "\n" << std::cos(particles[firstAvailableParticle].direction);
 			}
 		}
 
@@ -284,9 +281,11 @@ int main()
 
 				particles[firstAvailableParticle].x = ball.x;
 				particles[firstAvailableParticle].y = ball.y;
-				particles[firstAvailableParticle].direction = 0; // left
-				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (-swingForce) * 50;
+				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * -0.25;
+
+				std::cout << "\n" << particles[firstAvailableParticle].direction;
+
 			}
 		}
 		// Loop through all of the particles and draw them
