@@ -1,6 +1,6 @@
 #include <iostream>
 #include <raylib.h>
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <cstdio>
 
@@ -72,17 +72,16 @@ public:
 	// Render the circle
 	void Draw()
 	{
+		x += xSpeed;
+		y += ySpeed;
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
 	// Carry out the launch
 	void ContinueLaunch() {
 		// If the launch faze has not been completed
 		if (launchState > 0) {
-			xSpeed = (sqrt((launchState * launchState) + (ySpeed * ySpeed)) - abs(ySpeed)) / 5 * ((direction * 2) - 1);
-
-			x += xSpeed * GetFrameTime();
-			y += ySpeed * GetFrameTime();
-			launchState--;
+			xSpeed = launchState * cos(direction * 0.01745329);
+			ySpeed = launchState * sin(direction * 0.01745329);
 			/**
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
 			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
@@ -90,6 +89,7 @@ public:
 			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
 				launchState = 0; // end launch sequence
 			}
+
 			Draw();
 		}
 	}
@@ -250,9 +250,11 @@ int main()
 
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
-				particles[firstAvailableParticle].direction = (90 * i / particlesOnHit);
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (swingForce) * 50;
-				std::cout << "\n" << particles[firstAvailableParticle].direction;
+				particles[firstAvailableParticle].direction = (180 * i / particlesOnHit) - 90;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * 0.25;
+
+				std::cout << "\n" << particles[firstAvailableParticle].direction
+					      << "\n" << std::cos(particles[firstAvailableParticle].direction * 0.01745329);
 			}
 		}
 
