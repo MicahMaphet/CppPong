@@ -96,6 +96,7 @@ public:
 			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
 				launchState = 0; // end launch sequence
 			}
+			launchState--; // Decrement the launch state, slows down the particles. If it is 0, the launch stops
 			Draw();
 		}
 	}
