@@ -87,8 +87,8 @@ public:
 			  * xSpeed is the adjacent angle
 			  * ySpeed is the opposite angle
 			  */
-			xSpeed = launchState * cos(direction);
-			ySpeed = launchState * sin(direction);
+			xSpeed = launchState * cos(direction) * 0.2;
+			ySpeed = launchState * sin(direction) * 0.2;
 			// Decrement the launch state, slows down the particles. If it is 0, the launch stops
 			launchState--;
 			/**
@@ -159,8 +159,6 @@ int main()
 	int firstAvailableParticle = 0;
 	// Particle count for the number of particles that launch of a paddle on collision
 	int particlesOnHit = 15;
-	// The y axis spread of the particles on collision of the paddle
-	int particleDiffusion = 50;
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -260,7 +258,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y; 
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * 0.25;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 + swingForce;
 			}
 		}
 
@@ -285,7 +283,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y;
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2; 
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * -0.25; 
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 - swingForce; 
 			}
 		}
 		// Loop through all of the particles and draw them
