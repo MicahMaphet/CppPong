@@ -1,6 +1,6 @@
 #include <iostream>
 #include <raylib.h>
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <cstdio>
 
@@ -66,22 +66,32 @@ public:
 	float x, y;
 	float xSpeed, ySpeed;
 	float radius;
-	bool direction; // direction is a boolean, 1 is right, 0 is left
+	float direction; // In radians
 	int launchState;
+	float vectorSpeedMultiplier; // Multiplies the x and y speed of the particles
 
 	// Render the circle
 	void Draw()
 	{
+		x += xSpeed;
+		y += ySpeed;
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
 	// Carry out the launch
 	void ContinueLaunch() {
 		// If the launch faze has not been completed
 		if (launchState > 0) {
-			xSpeed = (sqrt((launchState * launchState) + (ySpeed * ySpeed)) - abs(ySpeed)) / 5 * ((direction * 2) - 1);
-
-			x += xSpeed * GetFrameTime();
-			y += ySpeed * GetFrameTime();
+			/**
+			  * Think os this as a triangle
+			  * direction is the angle, in radians
+			  * launchState is the hypotenuse
+			  * xSpeed is the adjacent angle
+			  * ySpeed is the opposite angle
+			  * vectorSpeedMultiplier is a flat base speed
+			  */
+			xSpeed = launchState * cos(direction) * vectorSpeedMultiplier;
+			ySpeed = launchState * sin(direction) * vectorSpeedMultiplier;
+			// Decrement the launch state, slows down the particles. If it is 0, the launch stops
 			launchState--;
 			/**
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
@@ -146,13 +156,12 @@ int main()
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
 		particles[i].radius = 3;
 		particles[i].launchState = 0;
+		particles[i].vectorSpeedMultiplier = 0.2;
 	}
 	// This is where the available index's particles are stored
 	int firstAvailableParticle = 0;
 	// Particle count for the number of particles that launch of a paddle on collision
 	int particlesOnHit = 15;
-	// The y axis spread of the particles on collision of the paddle
-	int particleDiffusion = 50;
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
@@ -243,30 +252,16 @@ int main()
 				// Find the first available particle, first particle in the particles arrray that is not in use
 				for (int j = 0; j < particleCount; j++) { 
 					// Check if the launch state of the particle has been finished
-					if (particles[j].launchState == 0) { 
-						firstAvailableParticle = j; 
+					if (particles[j].launchState == 0) {
+						firstAvailableParticle = j;
+						continue; // Now that an available particle is found, continue out of the loop
 					} 
 				}
-
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
-				particles[firstAvailableParticle].direction = 1; // right 
-				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (swingForce) * 50;
-				std::cout << 
-					sqrt(
-					(
-						(particles[firstAvailableParticle].launchState)
-						* (particles[firstAvailableParticle].launchState)
-						)
-
-					+ (
-						(particles[firstAvailableParticle].ySpeed)
-						* particles[firstAvailableParticle].ySpeed
-						)
-				)
-					- abs(particles[firstAvailableParticle].ySpeed)
-					<< "\n";
+				// This will range through PI radians
+				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 + swingForce;
 			}
 		}
 
@@ -284,14 +279,14 @@ int main()
 					// Check if the launch stat of the particle has been finished
 					if (particles[j].launchState == 0) {
 						firstAvailableParticle = j;
+						continue; // Now that an available particle is found, continue out of the loop
 					}
 				}
-
 				particles[firstAvailableParticle].x = ball.x;
 				particles[firstAvailableParticle].y = ball.y;
-				particles[firstAvailableParticle].direction = 0; // left
-				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion);
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (-swingForce) * 50;
+				// This will range through PI radians
+				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2; 
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 - swingForce; 
 			}
 		}
 		// Loop through all of the particles and draw them
