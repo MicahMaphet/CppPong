@@ -89,6 +89,8 @@ public:
 			  */
 			xSpeed = launchState * cos(direction);
 			ySpeed = launchState * sin(direction);
+			// Decrement the launch state, slows down the particles. If it is 0, the launch stops
+			launchState--;
 			/**
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
 			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
@@ -96,7 +98,6 @@ public:
 			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
 				launchState = 0; // end launch sequence
 			}
-			launchState--; // Decrement the launch state, slows down the particles. If it is 0, the launch stops
 			Draw();
 		}
 	}
