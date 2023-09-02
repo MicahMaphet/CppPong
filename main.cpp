@@ -96,7 +96,6 @@ public:
 			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
 				launchState = 0; // end launch sequence
 			}
-
 			Draw();
 		}
 	}
@@ -250,11 +249,11 @@ int main()
 				// Find the first available particle, first particle in the particles arrray that is not in use
 				for (int j = 0; j < particleCount; j++) { 
 					// Check if the launch state of the particle has been finished
-					if (particles[j].launchState == 0) { 
-						firstAvailableParticle = j; 
+					if (particles[j].launchState == 0) {
+						firstAvailableParticle = j;
+						continue;
 					} 
 				}
-
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
@@ -276,6 +275,7 @@ int main()
 					// Check if the launch stat of the particle has been finished
 					if (particles[j].launchState == 0) {
 						firstAvailableParticle = j;
+						continue;
 					}
 				}
 
@@ -283,9 +283,6 @@ int main()
 				particles[firstAvailableParticle].y = ball.y;
 				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2;
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * -0.25;
-
-				std::cout << "\n" << particles[firstAvailableParticle].direction;
-
 			}
 		}
 		// Loop through all of the particles and draw them
