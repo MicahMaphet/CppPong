@@ -68,6 +68,7 @@ public:
 	float radius;
 	float direction; // In radians
 	int launchState;
+	float vectorSpeedMultiplier; // Multiplies the x and y speed of the particles
 
 	// Render the circle
 	void Draw()
@@ -86,9 +87,10 @@ public:
 			  * launchState is the hypotenuse
 			  * xSpeed is the adjacent angle
 			  * ySpeed is the opposite angle
+			  * vectorSpeedMultiplier is a flat base speed
 			  */
-			xSpeed = launchState * cos(direction) * 0.2;
-			ySpeed = launchState * sin(direction) * 0.2;
+			xSpeed = launchState * cos(direction) * vectorSpeedMultiplier;
+			ySpeed = launchState * sin(direction) * vectorSpeedMultiplier;
 			// Decrement the launch state, slows down the particles. If it is 0, the launch stops
 			launchState--;
 			/**
@@ -154,6 +156,7 @@ int main()
 	for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
 		particles[i].radius = 3;
 		particles[i].launchState = 0;
+		particles[i].vectorSpeedMultiplier = 0.2;
 	}
 	// This is where the available index's particles are stored
 	int firstAvailableParticle = 0;
