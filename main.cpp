@@ -66,7 +66,7 @@ public:
 	float x, y;
 	float xSpeed, ySpeed;
 	float radius;
-	bool direction; // direction is a boolean, 1 is right, 0 is left
+	float direction;
 	int launchState;
 
 	// Render the circle
@@ -250,23 +250,9 @@ int main()
 
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
-				particles[firstAvailableParticle].direction = 1; // right 
-				particles[firstAvailableParticle].ySpeed = ((particlesOnHit / 2) * -particleDiffusion) + (i * particleDiffusion); 
+				particles[firstAvailableParticle].direction = (90 * i / particlesOnHit);
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 5 + (swingForce) * 50;
-				std::cout << 
-					sqrt(
-					(
-						(particles[firstAvailableParticle].launchState)
-						* (particles[firstAvailableParticle].launchState)
-						)
-
-					+ (
-						(particles[firstAvailableParticle].ySpeed)
-						* particles[firstAvailableParticle].ySpeed
-						)
-				)
-					- abs(particles[firstAvailableParticle].ySpeed)
-					<< "\n";
+				std::cout << "\n" << particles[firstAvailableParticle].direction;
 			}
 		}
 
