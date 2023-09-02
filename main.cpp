@@ -66,7 +66,7 @@ public:
 	float x, y;
 	float xSpeed, ySpeed;
 	float radius;
-	float direction;
+	float direction; // In radians
 	int launchState;
 
 	// Render the circle
@@ -80,8 +80,15 @@ public:
 	void ContinueLaunch() {
 		// If the launch faze has not been completed
 		if (launchState > 0) {
-			xSpeed = launchState * cos(direction * 0.01745329);
-			ySpeed = launchState * sin(direction * 0.01745329);
+			/**
+			  * Think os this as a triangle
+			  * direction is the angle, in radians
+			  * launchState is the hypotenuse
+			  * xSpeed is the adjacent angle
+			  * ySpeed is the opposite angle
+			  */
+			xSpeed = launchState * cos(direction);
+			ySpeed = launchState * sin(direction);
 			/**
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
 			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
@@ -250,11 +257,11 @@ int main()
 
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
-				particles[firstAvailableParticle].direction = (180 * i / particlesOnHit) - 90;
+				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * 0.25;
 
 				std::cout << "\n" << particles[firstAvailableParticle].direction
-					      << "\n" << std::cos(particles[firstAvailableParticle].direction * 0.01745329);
+					      << "\n" << std::cos(particles[firstAvailableParticle].direction);
 			}
 		}
 
