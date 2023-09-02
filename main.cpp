@@ -251,11 +251,12 @@ int main()
 					// Check if the launch state of the particle has been finished
 					if (particles[j].launchState == 0) {
 						firstAvailableParticle = j;
-						continue;
+						continue; // Now that an available particle is found, continue out of the loop
 					} 
 				}
 				particles[firstAvailableParticle].x = ball.x; 
 				particles[firstAvailableParticle].y = ball.y; 
+				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
 				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * 0.25;
 			}
@@ -275,14 +276,14 @@ int main()
 					// Check if the launch stat of the particle has been finished
 					if (particles[j].launchState == 0) {
 						firstAvailableParticle = j;
-						continue;
+						continue; // Now that an available particle is found, continue out of the loop
 					}
 				}
-
 				particles[firstAvailableParticle].x = ball.x;
 				particles[firstAvailableParticle].y = ball.y;
-				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2;
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * -0.25;
+				// This will range through PI radians
+				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2; 
+				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * .05 + swingForce * -0.25; 
 			}
 		}
 		// Loop through all of the particles and draw them
