@@ -12,14 +12,26 @@ class Ball
 {
 	public:
 		float x, y;
-		float xSpeed, ySpeed;
+		float velocity;
+		float direction; // In radians
 		float radius;
 		float friction;
 
 	// Render the circle
 	void Draw()
 	{
+		x += velocity * cos(direction) * GetFrameTime();
+		y += velocity * sin(direction) * GetFrameTime();
 		DrawCircle((int) x, (int) y, radius, WHITE);
+	}
+	void Del_direction(float del_direction) {
+		direction += del_direction;
+		if (direction < 0) {
+			direction *= -1;
+		}
+		if (direction >=	 2 * PI) {
+			direction -= 2 * PI;
+		}
 	}
 };
 
@@ -117,8 +129,8 @@ int main()
 	ball.x = GetScreenWidth() / 2.0f;
 	ball.y = GetScreenHeight() / 2.0f;
 	ball.radius = 10;
-	ball.xSpeed = 100;
-	ball.ySpeed = 300;
+	ball.velocity = 200;
+	ball.direction = 0;
 	ball.friction = 0.025;
 	Ball ballInit = ball;
 
@@ -167,22 +179,21 @@ int main()
 	while (!WindowShouldClose())
 	{
 		// Move the ball by the setySpeedin x and y, multipied by frame time
-		ball.x += ball.xSpeed * GetFrameTime();
-		ball.y += ball.ySpeed * GetFrameTime();
+		
 		// Friction for the ball
-		ball.xSpeed -= (abs(ball.xSpeed) / ball.xSpeed) * ball.friction;
+		ball.velocity -= (abs(ball.velocity) / ball.velocity) * ball.friction;
 
 		// Top screen collision
 		if (ball.y < 0)
 		{
 			ball.y = 0;
-			ball.ySpeed *= -1;
+			ball.Del_direction(PI);
 		}
 		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
 			ball.y = (float) GetScreenHeight();
-			ball.ySpeed *= -1;
+			ball.Del_direction(PI);
 		}
 
 		/* 
@@ -238,13 +249,13 @@ int main()
 			rightPaddle.xSpeed = 20;
 		}
 
-
 		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
-			leftPaddle.GetRect()) && ball.xSpeed < 0)
+			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			ball.xSpeed *= -1;
-			ball.xSpeed += leftPaddle.xSpeed;
+			std::cout << "\nPI/2 > " << ball.direction << " || " << ball.direction << " > 3PI/2 " << (ball.direction < PI / 2 || ball.direction > 3 * PI / 2);
+			ball.velocity += leftPaddle.xSpeed;
+			ball.Del_direction(PI);
 			swingForce = leftPaddle.xSpeed;
 
 			// Loop through all of the particles that launch on impact
@@ -261,16 +272,17 @@ int main()
 				particles[firstAvailableParticle].y = ball.y; 
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 + swingForce;
+				particles[firstAvailableParticle].launchState = abs(ball.velocity) * 0.25 + swingForce;
 			}
 		}
 
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
-			rightPaddle.GetRect()) && ball.xSpeed > 0)
+			rightPaddle.GetRect()) && (ball.direction < PI / 2 || ball.direction > 3 * PI / 2))
 		{
-			ball.xSpeed *= -1;
-			ball.xSpeed += rightPaddle.xSpeed;
+			std::cout << "\n3PI/2 < " << ball.direction << "  > PI/2 " << (ball.direction > PI / 2 && ball.direction < 3 * PI / 2);
+			ball.Del_direction(PI);
+			ball.velocity += abs(rightPaddle.xSpeed);
 			swingForce = rightPaddle.xSpeed;
 
 			// Loop through all of the particles that launch on impact
@@ -286,7 +298,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y;
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2; 
-				particles[firstAvailableParticle].launchState = abs(ball.xSpeed) * 0.25 - swingForce; 
+				particles[firstAvailableParticle].launchState = abs(ball.velocity) * 0.25 - swingForce; 
 			}
 		}
 		// Loop through all of the particles and draw them
@@ -303,7 +315,7 @@ int main()
 			rightPaddle.BringBack(); // Oscilate the right paddle
 
 			// Displays theySpeedof the ball
-			DrawText(TextFormat("Ball Speed: %f", abs(ball.xSpeed)), 100, 10, 20, BLUE);
+			DrawText(TextFormat("Ball Speed: %f", ball.velocity), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE);
 			DrawFPS(10, 10); // Displays the fps
