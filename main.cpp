@@ -29,7 +29,7 @@ class Ball
 		if (direction < 0) {
 			direction *= -1;
 		}
-		if (direction >=	 2 * PI) {
+		while (direction >= 2 * PI) {
 			direction -= 2 * PI;
 		}
 	}
@@ -130,7 +130,7 @@ int main()
 	ball.y = GetScreenHeight() / 2.0f;
 	ball.radius = 10;
 	ball.velocity = 200;
-	ball.direction = 0;
+	ball.direction = PI / 4;
 	ball.friction = 0.025;
 	Ball ballInit = ball;
 
@@ -187,13 +187,13 @@ int main()
 		if (ball.y < 0)
 		{
 			ball.y = 0;
-			ball.Del_direction(PI);
+			ball.Del_direction(PI + 2 * ball.direction);
 		}
 		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
 			ball.y = (float) GetScreenHeight();
-			ball.Del_direction(PI);
+			ball.Del_direction(PI + 2 * ball.direction); 
 		}
 
 		/* 
@@ -253,7 +253,6 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			std::cout << "\nPI/2 > " << ball.direction << " || " << ball.direction << " > 3PI/2 " << (ball.direction < PI / 2 || ball.direction > 3 * PI / 2);
 			ball.velocity += leftPaddle.xSpeed;
 			ball.Del_direction(PI);
 			swingForce = leftPaddle.xSpeed;
@@ -280,7 +279,6 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && (ball.direction < PI / 2 || ball.direction > 3 * PI / 2))
 		{
-			std::cout << "\n3PI/2 < " << ball.direction << "  > PI/2 " << (ball.direction > PI / 2 && ball.direction < 3 * PI / 2);
 			ball.Del_direction(PI);
 			ball.velocity += abs(rightPaddle.xSpeed);
 			swingForce = rightPaddle.xSpeed;
