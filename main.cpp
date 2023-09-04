@@ -33,6 +33,15 @@ class Ball
 			direction -= 2 * PI;
 		}
 	}
+	void setDirection(float newDirection) {
+		direction = newDirection;
+		if (direction < 0) {
+			direction *= -1;
+		}
+		while (direction >= 2 * PI) {
+			direction -= 2 * PI;
+		}
+	}
 };
 
 /**
@@ -130,7 +139,7 @@ int main()
 	ball.y = GetScreenHeight() / 2.0f;
 	ball.radius = 10;
 	ball.velocity = 200;
-	ball.direction = PI / 4;
+	ball.direction = PI * 0.75;
 	ball.friction = 0.025;
 	Ball ballInit = ball;
 
@@ -187,13 +196,13 @@ int main()
 		if (ball.y < 0)
 		{
 			ball.y = 0;
-			ball.Del_direction(PI + 2 * ball.direction);
+			ball.setDirection(2 * PI - ball.direction); 
 		}
 		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
-			ball.y = (float) GetScreenHeight();
-			ball.Del_direction(PI + 2 * ball.direction); 
+ 			ball.y = (float) GetScreenHeight() - ball.radius;
+			ball.setDirection(2 * PI - ball.direction); 
 		}
 
 		/* 
@@ -253,8 +262,8 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			ball.velocity += leftPaddle.xSpeed;
 			ball.Del_direction(PI);
+			ball.velocity += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
 
 			// Loop through all of the particles that launch on impact
@@ -315,7 +324,8 @@ int main()
 			// Displays theySpeedof the ball
 			DrawText(TextFormat("Ball Speed: %f", ball.velocity), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
-			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE);
+			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE); 
+			DrawText(TextFormat("Ball Direction: PI%f", ball.direction / PI), 10, 400, 20, BLUE);
 			DrawFPS(10, 10); // Displays the fps
 		EndDrawing(); // Finish frame
 	}
