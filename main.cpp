@@ -25,7 +25,6 @@ class Ball
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 	void Del_direction(float del_direction) {
-		std::cout << "\nd1: PI" << direction / PI;
 		direction += del_direction;
 		if (direction < 0) {
 			direction += 2 * PI;
@@ -33,7 +32,6 @@ class Ball
 		while (direction >= 2 * PI) {
 			direction -= 2 * PI;
 		}
-		std::cout << "\nd2: PI" << direction / PI;
 	}
 	void setDirection(float newDirection) {
 		std::cout << "\nd1: PI" << direction / PI;
@@ -267,7 +265,7 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			ball.setDirection(PI - ball.direction);
+			ball.setDirection(PI - ball.direction); // Change direction for bouncing
 
 			ball.velocity += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
@@ -294,7 +292,7 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && (ball.direction <= PI / 2 || ball.direction >= 3 * PI / 2))
 		{
-			ball.setDirection(PI - ball.direction);
+			ball.setDirection(PI - ball.direction); // Change dicection for bouncing
 			ball.velocity += abs(rightPaddle.xSpeed);
 			swingForce = rightPaddle.xSpeed;
 
