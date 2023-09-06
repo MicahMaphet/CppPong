@@ -34,7 +34,6 @@ class Ball
 		}
 	}
 	void setDirection(float newDirection) {
-		std::cout << "\nd1: PI" << direction / PI;
 		direction = newDirection;
 		while (direction < 0) {
 			direction += 2 * PI; 
@@ -42,7 +41,6 @@ class Ball
 		while (direction >= 2 * PI) {
 			direction -= 2 * PI;
 		}
-		std::cout << "\nd2: PI" << direction / PI;
 	}
 };
 
