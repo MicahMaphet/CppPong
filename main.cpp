@@ -24,8 +24,8 @@ class Ball
 		y += velocity * sin(direction) * GetFrameTime();
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
-	void Del_direction(float del_direction) {
-		direction += del_direction;
+	void changeDirection(float changeDirection) {
+		direction += changeDirection;
 		if (direction < 0) {
 			direction += 2 * PI;
 		}
