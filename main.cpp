@@ -25,22 +25,26 @@ class Ball
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 	void Del_direction(float del_direction) {
+		std::cout << "\nd1: PI" << direction / PI;
 		direction += del_direction;
 		if (direction < 0) {
-			direction *= -1;
+			direction += 2 * PI;
 		}
 		while (direction >= 2 * PI) {
 			direction -= 2 * PI;
 		}
+		std::cout << "\nd2: PI" << direction / PI;
 	}
 	void setDirection(float newDirection) {
+		std::cout << "\nd1: PI" << direction / PI;
 		direction = newDirection;
-		if (direction < 0) {
-			direction *= -1;
+		while (direction < 0) {
+			direction += 2 * PI; 
 		}
 		while (direction >= 2 * PI) {
 			direction -= 2 * PI;
 		}
+		std::cout << "\nd2: PI" << direction / PI;
 	}
 };
 
@@ -184,6 +188,7 @@ int main()
 	// Particle count for the number of particles that launch of a paddle on collision
 	int particlesOnHit = 15;
 
+
 	// Game loop until the window is clozed
 	while (!WindowShouldClose())
 	{
@@ -206,7 +211,7 @@ int main()
 		}
 
 		/* 
-		 * If the ball goes off the screen on the left size, reset the ball,
+		 * If the ball goes off the screen on the left size, reset the ball, 
 		 * and the left and right paddle.
 		 */
 		if (ball.x < 0 || ball.x > GetScreenWidth()) {
@@ -262,7 +267,8 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			ball.Del_direction(PI);
+			ball.setDirection(PI - ball.direction);
+
 			ball.velocity += leftPaddle.xSpeed;
 			swingForce = leftPaddle.xSpeed;
 
@@ -286,9 +292,9 @@ int main()
 
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
-			rightPaddle.GetRect()) && (ball.direction < PI / 2 || ball.direction > 3 * PI / 2))
+			rightPaddle.GetRect()) && (ball.direction <= PI / 2 || ball.direction >= 3 * PI / 2))
 		{
-			ball.Del_direction(PI);
+			ball.setDirection(PI - ball.direction);
 			ball.velocity += abs(rightPaddle.xSpeed);
 			swingForce = rightPaddle.xSpeed;
 
