@@ -135,6 +135,7 @@ public:
       **/
 	void SetYSpeed(float yOffset) {
 		if (!velocity.speed) velocity.speed = yOffset;
+		SetDirection(asin(yOffset / velocity.speed));
 		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
 
