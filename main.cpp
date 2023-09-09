@@ -4,6 +4,11 @@
 #include <string>
 #include <cstdio>
 
+struct Velocity {
+	float direction;
+	float speed;
+};
+
 /**
   * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
@@ -51,30 +56,45 @@ class Ball
   * oscilates back twoards in the x-axis)
   */
 class Paddle
-{	
-	public:
-		float x, y;
-		float speed;
-		float width, height;
-		float xSpeed, ySpeed;
-		float xDefault;
+{
+public:
+	float x, y;
+	float aimYSpeed;
+	float width, height;
+	float xDefault;
+	Velocity velocity;
+
 	// Returns, the height, width, x, and y of the rectangle
 	Rectangle GetRect()
 	{
 		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
+	float GetXSpeed() {
+		return velocity.speed * cos(velocity.direction);
+	}
+	float GetYSpeed() {
+		//std::cout << "\nspeed: " << velocity.speed << "\ndirection: " 
+		//	<< velocity.direction << "\nsin(direction): " << sin(velocity.direction);
+		return velocity.speed * sin(velocity.direction);
+	}
 	// Draws the rectangle of the paddle
 	void Draw()
 	{
+		x += GetXSpeed() * GetFrameTime();
+		y += GetYSpeed() * GetFrameTime();
 		DrawRectangleRec(GetRect(), WHITE);
 	}
-	// Brings the paddle back to the idle state after a swing
-	void BringBack()
-	{
-		xSpeed += (xDefault - x) * 0.1f;
-		xSpeed = xSpeed * 0.8f;
-		x += xSpeed;
+
+	void SetYSpeed(float yOffset) {
+		if (!velocity.speed) velocity.speed = yOffset;
+		std::cout << "\nyOffset: " << yOffset << "\nspeed: " << velocity.speed
+			<< "\nasin(yOffset / speed) / PI: PI" << asin(yOffset / velocity.speed) / PI;
+		velocity.direction = asin(yOffset / velocity.speed);
+		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
+
+	// Brings the paddle back to the idle state after a swing
+	void BringBack() { /* Code to be added to bring the paddle back across the X-axis after swing */ }
 };
 
 /**
@@ -149,9 +169,10 @@ int main()
 	leftPaddle.y = GetScreenHeight() / 2.0f;
 	leftPaddle.width = 50;
 	leftPaddle.height = 100;
-	leftPaddle.speed = 500;
-	leftPaddle.xDefault = leftPaddle.x; 
-	leftPaddle.xSpeed = 0;
+	leftPaddle.aimYSpeed = 500; 
+	leftPaddle.velocity.speed = 0; 
+	leftPaddle.velocity.direction = PI / 2; 
+	leftPaddle.xDefault = leftPaddle.x;
 	// Save the paddle for restarting the game
 	Paddle leftPaddleInit = leftPaddle;
 
@@ -161,9 +182,10 @@ int main()
 	rightPaddle.y = GetScreenHeight() / 2.0f;
 	rightPaddle.width = 50;
 	rightPaddle.height = 100;
-	rightPaddle.speed = 500;
+	rightPaddle.aimYSpeed = 500;
 	rightPaddle.xDefault = rightPaddle.x;
-	rightPaddle.xSpeed = 0;
+	rightPaddle.velocity.speed = 0;
+	rightPaddle.velocity.direction = PI / 2;
 	// Save the paddle for restarting the game
 	Paddle rightPaddleInit = rightPaddle;
 
@@ -220,43 +242,43 @@ int main()
 		// Move left paddle up
 		if (IsKeyDown(KEY_W))
 		{
-			leftPaddle.y -= leftPaddle.speed * GetFrameTime();
+			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed); 
 		}
 		// Move left paddle down
 		if (IsKeyDown(KEY_S))
 		{
-			leftPaddle.y += leftPaddle.speed * GetFrameTime();
+			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed); 
 		}
 		// Swing the paddle
 		if (IsKeyPressed(KEY_D))
 		{
-			leftPaddle.xSpeed += 50;
+			/* Code to be added to swing the paddle */
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_A))
 		{
-			leftPaddle.xSpeed = -20;
+			/* Code to be added to wind back the paddle */
 		}
 
 		// Move right paddle up
 		if (IsKeyDown(KEY_UP))
 		{
-			rightPaddle.y -= rightPaddle.speed * GetFrameTime();
+			rightPaddle.SetYSpeed(-rightPaddle.aimYSpeed);
 		}
 		// Move right paddle down
 		if (IsKeyDown(KEY_DOWN))
 		{
-			rightPaddle.y += rightPaddle.speed * GetFrameTime();
+			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
 		}
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			rightPaddle.xSpeed -= 50;
+			/* Code to be added to swing the paddle */
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_RIGHT))
 		{
-			rightPaddle.xSpeed = 20;
+			/* Code to be added to wind back the paddle */
 		}
 
 		// Left paddle and ball collision 
@@ -265,8 +287,7 @@ int main()
 		{
 			ball.setDirection(PI - ball.direction); // Change direction for bouncing
 
-			ball.velocity += leftPaddle.xSpeed;
-			swingForce = leftPaddle.xSpeed;
+			/* Code to be added to change the velocity of the ball on collision of the paddle */
 
 			// Loop through all of the particles that launch on impact
 			for (int i = 0; i < particlesOnHit; i++) { 
@@ -290,9 +311,9 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && (ball.direction <= PI / 2 || ball.direction >= 3 * PI / 2))
 		{
-			ball.setDirection(PI - ball.direction); // Change dicection for bouncing
-			ball.velocity += abs(rightPaddle.xSpeed);
-			swingForce = rightPaddle.xSpeed;
+			ball.setDirection(PI - ball.direction); // Change direction for bouncing
+
+			/* Code to be added to change the velocity of the ball on collision of the paddle */
 
 			// Loop through all of the particles that launch on impact
 			for (int i = 0; i < particlesOnHit; i++) {
