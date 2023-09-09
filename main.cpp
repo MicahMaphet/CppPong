@@ -85,12 +85,21 @@ public:
 		y += GetYSpeed() * GetFrameTime();
 		DrawRectangleRec(GetRect(), WHITE);
 	}
+	void SetDirection(float newDirection) {
+		velocity.direction = newDirection;
+		while (velocity.direction < 0) {
+			velocity.direction += 2 * PI;
+		}
+		while (velocity.direction >= 2 * PI) {
+			velocity.direction -= 2 * PI;
+		}
+	}
 
 	void SetYSpeed(float yOffset) {
 		if (!velocity.speed) velocity.speed = yOffset;
 		std::cout << "\nyOffset: " << yOffset << "\nspeed: " << velocity.speed
 			<< "\nasin(yOffset / speed) / PI: PI" << asin(yOffset / velocity.speed) / PI;
-		velocity.direction = asin(yOffset / velocity.speed);
+		SetDirection(asin(yOffset / velocity.speed));
 		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
 
