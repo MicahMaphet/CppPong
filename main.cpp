@@ -38,7 +38,7 @@ class Ball
 			direction -= 2 * PI;
 		}
 	}
-	void setDirection(float newDirection) {
+	void SetDirection(float newDirection) {
 		direction = newDirection;
 		while (direction < 0) {
 			direction += 2 * PI; 
@@ -69,6 +69,7 @@ public:
 	{
 		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
+	
 	float GetXSpeed() {
 		return velocity.speed * cos(velocity.direction);
 	}
@@ -219,13 +220,13 @@ int main()
 		if (ball.y < 0)
 		{
 			ball.y = 0;
-			ball.setDirection(2 * PI - ball.direction); 
+			ball.SetDirection(2 * PI - ball.direction); 
 		}
 		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
  			ball.y = (float) GetScreenHeight() - ball.radius;
-			ball.setDirection(2 * PI - ball.direction); 
+			ball.SetDirection(2 * PI - ball.direction); 
 		}
 
 		/* 
@@ -285,7 +286,7 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
 			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
 		{
-			ball.setDirection(PI - ball.direction); // Change direction for bouncing
+			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
 
 			/* Code to be added to change the velocity of the ball on collision of the paddle */
 
@@ -311,7 +312,7 @@ int main()
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
 			rightPaddle.GetRect()) && (ball.direction <= PI / 2 || ball.direction >= 3 * PI / 2))
 		{
-			ball.setDirection(PI - ball.direction); // Change direction for bouncing
+			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
 
 			/* Code to be added to change the velocity of the ball on collision of the paddle */
 
