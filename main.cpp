@@ -4,15 +4,18 @@
 #include <string>
 #include <cstdio>
 
+/**
+  * Velocity vector with speed and direction
+  **/
 struct Velocity {
-	float direction;
 	float speed;
+	float direction;
 };
 
 /**
   * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
-  */
+  **/
 class Ball
 {
 	public:
@@ -22,13 +25,22 @@ class Ball
 		float radius;
 		float friction;
 
-	// Render the circle
+	/**
+	  * Draws the circle
+	  * Updates the x and y speed with the velocity and direction
+	  **/
 	void Draw()
 	{
 		x += velocity * cos(direction) * GetFrameTime();
 		y += velocity * sin(direction) * GetFrameTime();
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
+	/**
+	  * Change the direction of the paddle
+	  * This is in a function to ensure that the direction does not go
+	  * below 0, if so it loops past 2PI
+	  * If it goes over 2PI it loops past 0
+	  **/
 	void changeDirection(float changeDirection) {
 		direction += changeDirection;
 		if (direction < 0) {
@@ -38,6 +50,12 @@ class Ball
 			direction -= 2 * PI;
 		}
 	}
+	/**
+	  * Sets the direction of the paddle
+	  * This is in a function to ensure that the direction does not go
+	  * below 0, if so it loops past 2PI
+	  * If it goes over 2PI it loops past 0
+	  **/
 	void SetDirection(float newDirection) {
 		direction = newDirection;
 		while (direction < 0) {
@@ -54,7 +72,7 @@ class Ball
   * height, width, xSpeed (which is used for determining how fast the
   * paddle is moving in the x-axis), and xDefault (which is where the paddle
   * oscilates back twoards in the x-axis)
-  */
+  **/
 class Paddle
 {
 public:
@@ -64,25 +82,43 @@ public:
 	float xDefault;
 	Velocity velocity;
 
-	// Returns, the height, width, x, and y of the rectangle
+	/**
+	  * Returns, the height, width, x, and y of the rectangle
+	  **/
 	Rectangle GetRect()
 	{
 		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
-	
+	/**
+	  * Get speed in the x direction of the velocity
+	  **/
 	float GetXSpeed() {
 		return velocity.speed * cos(velocity.direction);
 	}
+	/**
+	  * Get speed in the y direction of the velocity
+	  **/
 	float GetYSpeed() {
 		return velocity.speed * sin(velocity.direction);
 	}
-	// Draws the rectangle of the paddle
+	/**
+	  * Draws the rectangle of the paddle
+	  * Updates the x and y possition to the velocity
+	  * Keeps the velocity constant regarless of FPS by multiplying the change is x by
+	  * the GetFrameTime() which is the time inbetween each frame.
+	  **/
 	void Draw()
 	{
 		x += GetXSpeed() * GetFrameTime();
 		y += GetYSpeed() * GetFrameTime();
 		DrawRectangleRec(GetRect(), WHITE);
 	}
+	/**
+	  * Sets the direction of the paddle
+	  * This is in a function to ensure that the direction does not go
+	  * below 0, if so it loops past 2PI
+	  * If it goes over 2PI it loops past 0
+	  **/
 	void SetDirection(float newDirection) {
 		velocity.direction = newDirection;
 		while (velocity.direction < 0) {
@@ -92,13 +128,19 @@ public:
 			velocity.direction -= 2 * PI;
 		}
 	}
-
+	/**
+	  * Sets the y speed in the velocity
+	  * Keeps the x speed constant
+	  * Modifies the direction and the speed
+      **/
 	void SetYSpeed(float yOffset) {
 		if (!velocity.speed) velocity.speed = yOffset;
 		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
 
-	// Brings the paddle back to the idle state after a swing
+	/**
+	  * Brings the paddle back to the idle state after a swing
+	  **/
 	void BringBack() { /* Code to be added to bring the paddle back across the X-axis after swing */ }
 };
 
@@ -106,7 +148,7 @@ public:
   * These particles launch off the paddle at the point of impact of the ball.
   * The particles shoot off faster the faster the paddle is moving at the 
   * point of impact of the ball.
-  */
+  **/
 class Particle {
 public:
 	float x, y;
@@ -116,14 +158,19 @@ public:
 	int launchState;
 	float vectorSpeedMultiplier; // Multiplies the x and y speed of the particles
 
-	// Render the circle
+	/**
+	  * Render the particle
+	  * Update the position with the x and y speed
+	  **/
 	void Draw()
 	{
 		x += xSpeed;
 		y += ySpeed;
 		DrawCircle((int)x, (int)y, radius, WHITE);
 	}
-	// Carry out the launch
+	/**
+	  * Continue the launch, slowing down and calculating movement in direction.
+	  **/
 	void ContinueLaunch() {
 		// If the launch faze has not been completed
 		if (launchState > 0) {
@@ -134,7 +181,7 @@ public:
 			  * xSpeed is the adjacent angle
 			  * ySpeed is the opposite angle
 			  * vectorSpeedMultiplier is a flat base speed
-			  */
+			  **/
 			xSpeed = launchState * cos(direction) * vectorSpeedMultiplier;
 			ySpeed = launchState * sin(direction) * vectorSpeedMultiplier;
 			// Decrement the launch state, slows down the particles. If it is 0, the launch stops
@@ -142,7 +189,7 @@ public:
 			/**
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
 			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
-			  */
+			  **/
 			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
 				launchState = 0; // end launch sequence
 			}
@@ -233,10 +280,10 @@ int main()
 			ball.SetDirection(2 * PI - ball.direction); 
 		}
 
-		/* 
-		 * If the ball goes off the screen on the left size, reset the ball, 
-		 * and the left and right paddle.
-		 */
+		/** 
+		  * If the ball goes off the screen on the left size, reset the ball, 
+		  * and the left and right paddle.
+		  **/
 		if (ball.x < 0 || ball.x > GetScreenWidth()) {
 			// This resets to all the initialized vairables
 			ball = ballInit;
@@ -257,12 +304,12 @@ int main()
 		// Swing the paddle
 		if (IsKeyPressed(KEY_D))
 		{
-			/* Code to be added to swing the paddle */
+			/** Code to be added to swing the paddle **/
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_A))
 		{
-			/* Code to be added to wind back the paddle */
+			/** Code to be added to wind back the paddle **/
 		}
 
 		// Move right paddle up
@@ -278,7 +325,7 @@ int main()
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
-			/* Code to be added to swing the paddle */
+			/** Code to be added to swing the paddle **/
 		}
 		// Hold paddle back
 		if (IsKeyDown(KEY_RIGHT))
@@ -292,7 +339,7 @@ int main()
 		{
 			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
 
-			/* Code to be added to change the velocity of the ball on collision of the paddle */
+			/** Code to be added to change the velocity of the ball on collision of the paddle **/
 
 			// Loop through all of the particles that launch on impact
 			for (int i = 0; i < particlesOnHit; i++) { 
@@ -318,7 +365,7 @@ int main()
 		{
 			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
 
-			/* Code to be added to change the velocity of the ball on collision of the paddle */
+			/** Code to be added to change the velocity of the ball on collision of the paddle **/
 
 			// Loop through all of the particles that launch on impact
 			for (int i = 0; i < particlesOnHit; i++) {
