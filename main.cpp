@@ -74,8 +74,6 @@ public:
 		return velocity.speed * cos(velocity.direction);
 	}
 	float GetYSpeed() {
-		//std::cout << "\nspeed: " << velocity.speed << "\ndirection: " 
-		//	<< velocity.direction << "\nsin(direction): " << sin(velocity.direction);
 		return velocity.speed * sin(velocity.direction);
 	}
 	// Draws the rectangle of the paddle
@@ -97,9 +95,6 @@ public:
 
 	void SetYSpeed(float yOffset) {
 		if (!velocity.speed) velocity.speed = yOffset;
-		std::cout << "\nyOffset: " << yOffset << "\nspeed: " << velocity.speed
-			<< "\nasin(yOffset / speed) / PI: PI" << asin(yOffset / velocity.speed) / PI;
-		SetDirection(asin(yOffset / velocity.speed));
 		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
 
