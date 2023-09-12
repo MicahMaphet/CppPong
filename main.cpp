@@ -13,30 +13,6 @@ struct Velocity {
 };
 
 /**
-  * Triangle that is created by specifying the position, a hypotenuse, and an angle
-  **/
-class Triangle {
-public:
-	double x, y;
-	double hypotenuse; // Length of the hypotenuse
-	double angle;
-	void SetTriangle(double newX, double newY, double newHypotenuse, double newAngle) {
-		x = newX;
-		y = newY;
-		hypotenuse = newHypotenuse;
-		angle = newAngle;
-	}
-	void Draw() {
-		// Draw hypotenuse
-		DrawLine(x, y, x + hypotenuse * cos(angle), y + hypotenuse * sin(angle), WHITE);
-		// Draw ajacent side
-		DrawLine(x, y, x + hypotenuse * cos(angle), y, WHITE);
-		// Draw oposite side
-		DrawLine(x + hypotenuse * cos(angle), y, x + hypotenuse * cos(angle), y + hypotenuse * sin(angle), WHITE);
-	}
-};
-
-/**
   * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
   **/
@@ -48,7 +24,6 @@ class Ball
 		float direction; // In radians
 		float radius;
 		float friction;
-		Triangle velocityDirectionTriangle;
 
 	/**
 	  * Draws the circle
@@ -90,10 +65,6 @@ class Ball
 			direction -= 2 * PI;
 		}
 	}
-	void DrawVelocityTriangle(double x, double y, double scale) {
-		velocityDirectionTriangle.SetTriangle(x, y, velocity * scale, direction);
-		velocityDirectionTriangle.Draw();
-	}
 };
 
 /**
@@ -110,7 +81,6 @@ public:
 	float width, height;
 	float xDefault;
 	Velocity velocity;
-	Triangle velocityDirectionTriangle;
 
 	/**
 	  * Returns, the height, width, x, and y of the rectangle
@@ -164,10 +134,7 @@ public:
 	  * Modifies the direction and the speed
       **/
 	void SetYSpeed(float yOffset) {
-		if (!velocity.speed) {
-			velocity.speed = abs(yOffset);
-			if (!yOffset) return;
-		}
+		if (!velocity.speed) velocity.speed = yOffset;
 		SetDirection(asin(yOffset / velocity.speed));
 		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
@@ -176,11 +143,6 @@ public:
 	  * Brings the paddle back to the idle state after a swing
 	  **/
 	void BringBack() { /* Code to be added to bring the paddle back across the X-axis after swing */ }
-
-	void DrawVelocityTriangle(double x, double y, double scale) {
-		velocityDirectionTriangle.SetTriangle(x, y, velocity.speed * scale, velocity.direction);
-		velocityDirectionTriangle.Draw();
-	}
 };
 
 /**
@@ -188,7 +150,7 @@ public:
   * The particles shoot off faster the faster the paddle is moving at the 
   * point of impact of the ball.
   **/
-class Particle { 
+class Particle {
 public:
 	float x, y;
 	float xSpeed, ySpeed;
@@ -331,12 +293,14 @@ int main()
 		}
 
 		// Move left paddle up
-		if (IsKeyDown(KEY_W)) {
+		if (IsKeyDown(KEY_W))
+		{
 			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed); 
-		} else if (IsKeyDown(KEY_S)) {
+		}
+		// Move left paddle down
+		if (IsKeyDown(KEY_S))
+		{
 			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed); 
-		} else {
-		 	leftPaddle.SetYSpeed(0);
 		}
 		// Swing the paddle
 		if (IsKeyPressed(KEY_D))
@@ -350,14 +314,15 @@ int main()
 		}
 
 		// Move right paddle up
-		if (IsKeyDown(KEY_UP)) {
+		if (IsKeyDown(KEY_UP))
+		{
 			rightPaddle.SetYSpeed(-rightPaddle.aimYSpeed);
-		} else if (IsKeyDown(KEY_DOWN))	{
-			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
-		} else {
-			//rightPaddle.SetYSpeed(0);
 		}
-
+		// Move right paddle down
+		if (IsKeyDown(KEY_DOWN))
+		{
+			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
+		}
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT))
 		{
@@ -427,10 +392,8 @@ int main()
 			ClearBackground(BLACK); // Make the background colour black
 
 			ball.Draw(); // Render the ball
-			ball.DrawVelocityTriangle(100, 500, 0.25);
 			leftPaddle.Draw(); // Render the left paddle
 			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
- 			leftPaddle.DrawVelocityTriangle(200, 500, 0.25); 
 			rightPaddle.Draw(); // Render the right paddle
 			rightPaddle.BringBack(); // Oscilate the right paddle
 
@@ -438,10 +401,7 @@ int main()
 			DrawText(TextFormat("Ball Speed: %f", ball.velocity), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE); 
-			DrawText(TextFormat("Ball Direction: PI%f", ball.direction / PI), 10, 450, 20, BLUE);
-			DrawText(TextFormat("leftPaddle velocity: PI%f", leftPaddle.velocity.speed), 10, 470, 20, BLUE);
-			DrawText(TextFormat("rightPaddle velocity: PI%f", rightPaddle.velocity.speed), 10, 490, 20, BLUE);
-
+			DrawText(TextFormat("Ball Direction: PI%f", ball.direction / PI), 10, 400, 20, BLUE);
 			DrawFPS(10, 10); // Displays the fps
 		EndDrawing(); // Finish frame
 	}
