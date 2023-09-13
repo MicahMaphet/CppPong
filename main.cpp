@@ -20,19 +20,17 @@ class Ball
 {
 	public:
 		float x, y;
-		float velocity;
-		float direction; // In radians
 		float radius;
 		float friction;
-
+		Velocity velocity;
 	/**
 	  * Draws the circle
 	  * Updates the x and y speed with the velocity and direction
 	  **/
 	void Draw()
 	{
-		x += velocity * cos(direction) * GetFrameTime();
-		y += velocity * sin(direction) * GetFrameTime();
+		x += velocity.speed * cos(velocity.direction) * GetFrameTime();
+		y += velocity.speed * sin(velocity.direction) * GetFrameTime();
 		DrawCircle((int) x, (int) y, radius, WHITE);
 	}
 	/**
@@ -42,12 +40,12 @@ class Ball
 	  * If it goes over 2PI it loops past 0
 	  **/
 	void changeDirection(float changeDirection) {
-		direction += changeDirection;
-		if (direction < 0) {
-			direction += 2 * PI;
+		velocity.direction += changeDirection;
+		if (velocity.direction < 0) {
+			velocity.direction += 2 * PI;
 		}
-		while (direction >= 2 * PI) {
-			direction -= 2 * PI;
+		while (velocity.direction >= 2 * PI) {
+			velocity.direction -= 2 * PI;
 		}
 	}
 	/**
@@ -57,12 +55,12 @@ class Ball
 	  * If it goes over 2PI it loops past 0
 	  **/
 	void SetDirection(float newDirection) {
-		direction = newDirection;
-		while (direction < 0) {
-			direction += 2 * PI; 
+		velocity.direction = newDirection;
+		while (velocity.direction < 0) {
+			velocity.direction += 2 * PI;
 		}
-		while (direction >= 2 * PI) {
-			direction -= 2 * PI;
+		while (velocity.direction >= 2 * PI) {
+			velocity.direction -= 2 * PI;
 		}
 	}
 };
@@ -211,8 +209,8 @@ int main()
 	ball.x = GetScreenWidth() / 2.0f;
 	ball.y = GetScreenHeight() / 2.0f;
 	ball.radius = 10;
-	ball.velocity = 200;
-	ball.direction = PI * 0.75;
+	ball.velocity.speed = 200;
+	ball.velocity.direction = PI * 0.75;
 	ball.friction = 0.025;
 	Ball ballInit = ball;
 
@@ -266,19 +264,19 @@ int main()
 		// Move the ball by the setySpeedin x and y, multipied by frame time
 		
 		// Friction for the ball
-		ball.velocity -= (abs(ball.velocity) / ball.velocity) * ball.friction;
+		ball.velocity.speed -= (abs(ball.velocity.speed) / ball.velocity.speed) * ball.friction;
 
 		// Top screen collision
 		if (ball.y < 0)
 		{
 			ball.y = 0;
-			ball.SetDirection(2 * PI - ball.direction); 
+			ball.SetDirection(2 * PI - ball.velocity.direction);
 		}
 		// Bottom screen collision
 		if (ball.y > GetScreenHeight())
 		{
  			ball.y = (float) GetScreenHeight() - ball.radius;
-			ball.SetDirection(2 * PI - ball.direction); 
+			ball.SetDirection(2 * PI - ball.velocity.direction); 
 		}
 
 		/** 
@@ -336,9 +334,9 @@ int main()
 
 		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
-			leftPaddle.GetRect()) && ball.direction > PI / 2 && ball.direction < 3 * PI / 2)
+			leftPaddle.GetRect()) && ball.velocity.direction > PI / 2 && ball.velocity.direction < 3 * PI / 2)
 		{
-			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
+			ball.SetDirection(PI - ball.velocity.direction); // Change direction for bouncing
 
 			/** Code to be added to change the velocity of the ball on collision of the paddle **/
 
@@ -356,15 +354,15 @@ int main()
 				particles[firstAvailableParticle].y = ball.y; 
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (PI * i / particlesOnHit) - PI / 2;
-				particles[firstAvailableParticle].launchState = abs(ball.velocity) * 0.25 + swingForce;
+				particles[firstAvailableParticle].launchState = abs(ball.velocity.speed) * 0.25 + swingForce;
 			}
 		}
 
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
-			rightPaddle.GetRect()) && (ball.direction <= PI / 2 || ball.direction >= 3 * PI / 2))
+			rightPaddle.GetRect()) && (ball.velocity.direction <= PI / 2 || ball.velocity.direction >= 3 * PI / 2))
 		{
-			ball.SetDirection(PI - ball.direction); // Change direction for bouncing
+			ball.SetDirection(PI - ball.velocity.direction); // Change direction for bouncing
 
 			/** Code to be added to change the velocity of the ball on collision of the paddle **/
 
@@ -381,7 +379,7 @@ int main()
 				particles[firstAvailableParticle].y = ball.y;
 				// This will range through PI radians
 				particles[firstAvailableParticle].direction = (-PI * i / particlesOnHit) - PI / 2; 
-				particles[firstAvailableParticle].launchState = abs(ball.velocity) * 0.25 - swingForce; 
+				particles[firstAvailableParticle].launchState = abs(ball.velocity.speed) * 0.25 - swingForce; 
 			}
 		}
 		// Loop through all of the particles and draw them
@@ -401,7 +399,7 @@ int main()
 			DrawText(TextFormat("Ball Speed: %f", ball.velocity), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE); 
-			DrawText(TextFormat("Ball Direction: PI%f", ball.direction / PI), 10, 400, 20, BLUE);
+			DrawText(TextFormat("Ball Direction: PI%f", ball.velocity.direction / PI), 10, 400, 20, BLUE);
 			DrawFPS(10, 10); // Displays the fps
 		EndDrawing(); // Finish frame
 	}
