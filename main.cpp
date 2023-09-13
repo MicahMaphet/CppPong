@@ -16,8 +16,7 @@ struct Velocity {
   * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
   **/
-class Ball
-{
+class Ball {
 	public:
 		float x, y;
 		float radius;
@@ -71,8 +70,7 @@ class Ball
   * paddle is moving in the x-axis), and xDefault (which is where the paddle
   * oscilates back twoards in the x-axis)
   **/
-class Paddle
-{
+class Paddle {
 public:
 	float x, y;
 	float aimYSpeed;
@@ -83,8 +81,7 @@ public:
 	/**
 	  * Returns, the height, width, x, and y of the rectangle
 	  **/
-	Rectangle GetRect()
-	{
+	Rectangle GetRect() {
 		return Rectangle{ x - width / 2, y - height / 2,  width, height };
 	}
 	/**
@@ -105,8 +102,7 @@ public:
 	  * Keeps the velocity constant regarless of FPS by multiplying the change is x by
 	  * the GetFrameTime() which is the time inbetween each frame.
 	  **/
-	void Draw()
-	{
+	void Draw() {
 		x += GetXSpeed() * GetFrameTime();
 		y += GetYSpeed() * GetFrameTime();
 		DrawRectangleRec(GetRect(), WHITE);
@@ -161,8 +157,7 @@ public:
 	  * Render the particle
 	  * Update the position with the x and y speed
 	  **/
-	void Draw()
-	{
+	void Draw() {
 		x += xSpeed;
 		y += ySpeed;
 		DrawCircle((int)x, (int)y, radius, WHITE);
@@ -197,8 +192,7 @@ public:
 	}
 };
 
-int main() 
-{	
+int main() {	
 	// Initializing the window, dimensions 800x600, and named Pong
 	InitWindow(1000, 600, "Pong");
 	// Stops the render rate from exceding the render rate of the device
@@ -259,8 +253,7 @@ int main()
 
 
 	// Game loop until the window is clozed
-	while (!WindowShouldClose())
-	{
+	while (!WindowShouldClose()) {
 		// Move the ball by the setySpeedin x and y, multipied by frame time
 		
 		// Friction for the ball
@@ -273,8 +266,7 @@ int main()
 			ball.SetDirection(2 * PI - ball.velocity.direction);
 		}
 		// Bottom screen collision
-		if (ball.y > GetScreenHeight())
-		{
+		if (ball.y > GetScreenHeight()) {
  			ball.y = (float) GetScreenHeight() - ball.radius;
 			ball.SetDirection(2 * PI - ball.velocity.direction); 
 		}
@@ -291,51 +283,42 @@ int main()
 		}
 
 		// Move left paddle up
-		if (IsKeyDown(KEY_W))
-		{
+		if (IsKeyDown(KEY_W)) {
 			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed); 
-		}
 		// Move left paddle down
-		if (IsKeyDown(KEY_S))
-		{
+		}
+		if (IsKeyDown(KEY_S)) {
 			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed); 
 		}
 		// Swing the paddle
-		if (IsKeyPressed(KEY_D))
-		{
+		if (IsKeyPressed(KEY_D)) {
 			/** Code to be added to swing the paddle **/
 		}
 		// Hold paddle back
-		if (IsKeyDown(KEY_A))
-		{
+		if (IsKeyDown(KEY_A)) {
 			/** Code to be added to wind back the paddle **/
 		}
 
 		// Move right paddle up
-		if (IsKeyDown(KEY_UP))
-		{
+		if (IsKeyDown(KEY_UP)) {
 			rightPaddle.SetYSpeed(-rightPaddle.aimYSpeed);
 		}
 		// Move right paddle down
-		if (IsKeyDown(KEY_DOWN))
-		{
+		if (IsKeyDown(KEY_DOWN)) {
 			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
 		}
 		// Swing right paddle
-		if (IsKeyPressed(KEY_LEFT))
-		{
+		if (IsKeyPressed(KEY_LEFT)) {
 			/** Code to be added to swing the paddle **/
 		}
 		// Hold paddle back
-		if (IsKeyDown(KEY_RIGHT))
-		{
-			/* Code to be added to wind back the paddle */
+		if (IsKeyDown(KEY_RIGHT)) {
+			/** Code to be added to wind back the paddle **/
 		}
 
 		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
-			leftPaddle.GetRect()) && ball.velocity.direction > PI / 2 && ball.velocity.direction < 3 * PI / 2)
-		{
+			leftPaddle.GetRect()) && ball.velocity.direction > PI / 2 && ball.velocity.direction < 3 * PI / 2) {
 			ball.SetDirection(PI - ball.velocity.direction); // Change direction for bouncing
 
 			/** Code to be added to change the velocity of the ball on collision of the paddle **/
@@ -360,8 +343,7 @@ int main()
 
 		// Right paddle and ball collision
 		if (CheckCollisionCircleRec(Vector2{ ball.x, ball.y }, ball.radius,
-			rightPaddle.GetRect()) && (ball.velocity.direction <= PI / 2 || ball.velocity.direction >= 3 * PI / 2))
-		{
+			rightPaddle.GetRect()) && (ball.velocity.direction <= PI / 2 || ball.velocity.direction >= 3 * PI / 2)) {
 			ball.SetDirection(PI - ball.velocity.direction); // Change direction for bouncing
 
 			/** Code to be added to change the velocity of the ball on collision of the paddle **/
