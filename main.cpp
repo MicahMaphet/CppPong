@@ -13,6 +13,37 @@ struct Velocity {
 };
 
 /**
+  * Triangle class
+  * Triangle is computed based on the hypotenuse and angle
+  **/
+class Triangle {
+public:
+	float x, y;
+	float h; // hypotenuse
+	float angle;
+	// Set the triangle
+	void SetTriangle(float newX, float newY, float newH, float newAngle) {
+		x = newX;
+		y = newY;
+		h = newH;
+		angle = newAngle;
+	}
+	/**
+	  * Draws the triangle
+	  * Takes in the position, the length fo the hypostenuse and the angle
+	  * Draws the opposite, ajecent, and hypotensue of the triangle
+	  **/
+	void Draw(float x, float y, float h, float angle) {
+		// Draw the hypotenuse
+		DrawLine(x, y, h * cos(angle), h * sin(angle), WHITE); 
+		// Draw agecent side
+		DrawLine(x, y, h * cos(angle), y, WHITE);
+		// Draw oppositie side
+		DrawLine(h * cos(angle), h * sin(angle), h * cos(angle), y, WHITE);
+	}
+};
+
+/**
   * This is the class of the ball, it has the vector space, x and y
   * speed, and radius.
   **/
