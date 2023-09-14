@@ -31,15 +31,15 @@ public:
 	/**
 	  * Draws the triangle
 	  * Takes in the position, the length fo the hypostenuse and the angle
-	  * Draws the opposite, ajecent, and hypotensue of the triangle
+	  * Draws the opposite, ajecent, and hypotensue of the trianglew
 	  **/
-	void Draw(float x, float y, float h, float angle) {
+	void Draw() {
 		// Draw the hypotenuse
-		DrawLine(x, y, h * cos(angle), h * sin(angle), WHITE); 
+		DrawLine(x, y, h * cos(angle) + x, h * sin(angle) + y, WHITE); 
 		// Draw agecent side
-		DrawLine(x, y, h * cos(angle), y, WHITE);
+		DrawLine(x, y, h * cos(angle) + x, y, WHITE);
 		// Draw oppositie side
-		DrawLine(h * cos(angle), h * sin(angle), h * cos(angle), y, WHITE);
+		DrawLine(h * cos(angle) + x, h * sin(angle) + y, h * cos(angle) + x, y, WHITE);
 	}
 };
 
@@ -282,6 +282,8 @@ int main() {
 	// Particle count for the number of particles that launch of a paddle on collision
 	int particlesOnHit = 15;
 
+	Triangle lPVT; // Left paddle velocity triangle
+
 
 	// Game loop until the window is clozed
 	while (!WindowShouldClose()) {
@@ -405,11 +407,13 @@ int main() {
 			ball.Draw(); // Render the ball
 			leftPaddle.Draw(); // Render the left paddle
 			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
+			lPVT.SetTriangle(500, 500, leftPaddle.velocity.speed / 10, leftPaddle.velocity.direction);
+			lPVT.Draw();
 			rightPaddle.Draw(); // Render the right paddle
 			rightPaddle.BringBack(); // Oscilate the right paddle
 
 			// Displays theySpeedof the ball
-			DrawText(TextFormat("Ball Speed: %f", ball.velocity), 100, 10, 20, BLUE);
+			DrawText(TextFormat("Ball Speed: %f", ball.velocity.speed), 100, 10, 20, BLUE);
 			// Displays theySpeedof the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE); 
 			DrawText(TextFormat("Ball Direction: PI%f", ball.velocity.direction / PI), 10, 400, 20, BLUE);
