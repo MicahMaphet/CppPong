@@ -71,12 +71,10 @@ class Ball {
 	  **/
 	void changeDirection(float changeDirection) {
 		velocity.direction += changeDirection;
-		if (velocity.direction < 0) {
+		if (velocity.direction < 0)
 			velocity.direction += 2 * PI;
-		}
-		while (velocity.direction >= 2 * PI) {
+		while (velocity.direction >= 2 * PI) 
 			velocity.direction -= 2 * PI;
-		}
 	}
 	/**
 	  * Sets the direction of the paddle
@@ -86,12 +84,10 @@ class Ball {
 	  **/
 	void SetDirection(float newDirection) {
 		velocity.direction = newDirection;
-		while (velocity.direction < 0) {
+		while (velocity.direction < 0)
 			velocity.direction += 2 * PI;
-		}
-		while (velocity.direction >= 2 * PI) {
+		while (velocity.direction >= 2 * PI)
 			velocity.direction -= 2 * PI;
-		}
 	}
 };
 
@@ -146,12 +142,10 @@ public:
 	  **/
 	void SetDirection(float newDirection) {
 		velocity.direction = newDirection;
-		while (velocity.direction < 0) {
+		while (velocity.direction < 0) 
 			velocity.direction += 2 * PI;
-		}
-		while (velocity.direction >= 2 * PI) {
+		while (velocity.direction >= 2 * PI) 
 			velocity.direction -= 2 * PI;
-		}
 	}
 	/**
 	  * Sets the y speed in the velocity
@@ -215,9 +209,8 @@ public:
 			  * If the particle is off the screen, set launch state to 0, ending the launch sequence (which is only
 			  * calculated with the x-axis because it never goes off the y-axis since the ball bounces off on those sides)
 			  **/
-			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2) {
+			if (x < 0 - radius * 2 || x > GetScreenWidth() + radius * 2)
 				launchState = 0; // end launch sequence
-			}
 			Draw();
 		}
 	}
@@ -316,38 +309,27 @@ int main() {
 		}
 
 		// Move left paddle up
-		if (IsKeyDown(KEY_W)) {
+		if (IsKeyDown(KEY_W))
 			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed); 
 		// Move left paddle down
-		}
-		if (IsKeyDown(KEY_S)) {
-			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed); 
-		}
+		else if (IsKeyDown(KEY_S))
+			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed);
 		// Swing the paddle
-		if (IsKeyPressed(KEY_D)) {
-			/** Code to be added to swing the paddle **/
-		}
+		if (IsKeyPressed(KEY_D)) { /** Code to be added to swing the paddle **/ }
 		// Hold paddle back
-		if (IsKeyDown(KEY_A)) {
-			/** Code to be added to wind back the paddle **/
-		}
+		if (IsKeyDown(KEY_A)) { /** Code to be added to wind back the paddle **/ }
 
 		// Move right paddle up
-		if (IsKeyDown(KEY_UP)) {
+		if (IsKeyDown(KEY_UP)) 
 			rightPaddle.SetYSpeed(-rightPaddle.aimYSpeed);
-		}
 		// Move right paddle down
-		if (IsKeyDown(KEY_DOWN)) {
+		else if (IsKeyDown(KEY_DOWN)) 
 			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
-		}
+		
 		// Swing right paddle
-		if (IsKeyPressed(KEY_LEFT)) {
-			/** Code to be added to swing the paddle **/
-		}
+		if (IsKeyPressed(KEY_LEFT)) { /** Code to be added to swing the paddle **/ }
 		// Hold paddle back
-		if (IsKeyDown(KEY_RIGHT)) {
-			/** Code to be added to wind back the paddle **/
-		}
+		if (IsKeyDown(KEY_RIGHT)) { /** Code to be added to wind back the paddle **/ }
 
 		// Left paddle and ball collision 
 		if (CheckCollisionCircleRec(Vector2{ball.x, ball.y}, ball.radius, 
