@@ -152,12 +152,25 @@ public:
 	  * Keeps the x speed constant
 	  * Modifies the direction and the speed
       **/
-	void SetYSpeed(float yOffset) {
+	void SetYSpeed(float newYSpeed) {
+		if (!velocity.speed) {
+			velocity.speed = newYSpeed;
+			if (newYSpeed == 0) return;
+		}
+		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(newYSpeed, 2)); 
+		SetDirection(asin(newYSpeed / velocity.speed)); 
+	}
+	/**
+	  * Offset the y speed in the velocity
+	  * Keeps the x speed constant
+	  * Modifies the direction and the speed
+	  **/
+	void OffsetYSpeed(float yOffset) {
 		if (!velocity.speed) {
 			velocity.speed = yOffset;
 			if (yOffset == 0) return;
 		}
-		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2)); 
+		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(GetYSpeed() + yOffset, 2));
 		SetDirection(asin(yOffset / velocity.speed));
 	}
 
