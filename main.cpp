@@ -279,6 +279,8 @@ int main() {
 	int particlesOnHit = 15;
 
 	Triangle lPVT; // Left paddle velocity triangle
+	Triangle rPVT; // Right paddle velocity triangle
+	Triangle bVT; // Ball velocity triangle
 
 
 	// Game loop until the window is clozed
@@ -393,16 +395,20 @@ int main() {
 			ClearBackground(BLACK); // Make the background colour black
 
 			ball.Draw(); // Render the ball
+			bVT.SetTriangle(100, 500, ball.velocity.speed / 10, ball.velocity.direction); 
+			bVT.Draw(); 
 			leftPaddle.Draw(); // Render the left paddle
 			leftPaddle.BringBack(); // Oscilate the left paddle back to the origin
-			lPVT.SetTriangle(500, 500, leftPaddle.velocity.speed / 10, leftPaddle.velocity.direction);
+			lPVT.SetTriangle(200, 500, leftPaddle.velocity.speed / 10, leftPaddle.velocity.direction);
 			lPVT.Draw();
 			rightPaddle.Draw(); // Render the right paddle
 			rightPaddle.BringBack(); // Oscilate the right paddle
+			rPVT.SetTriangle(300, 500, rightPaddle.velocity.speed / 10, rightPaddle.velocity.direction); 
+			rPVT.Draw(); 
 
-			// Displays theySpeedof the ball
+			// Displays the ySpeed of the ball
 			DrawText(TextFormat("Ball Speed: %f", ball.velocity.speed), 100, 10, 20, BLUE);
-			// Displays theySpeedof the last paddle to hit the ball on contact
+			// Displays the ySpeed of the last paddle to hit the ball on contact
 			DrawText(TextFormat("Swing Force: %f", swingForce), 400, 10, 20, BLUE); 
 			DrawText(TextFormat("Ball Direction: PI%f", ball.velocity.direction / PI), 10, 400, 20, BLUE);
 			DrawFPS(10, 10); // Displays the fps
