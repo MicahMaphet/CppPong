@@ -153,9 +153,12 @@ public:
 	  * Modifies the direction and the speed
       **/
 	void SetYSpeed(float yOffset) {
-		if (!velocity.speed) velocity.speed = yOffset;
+		if (!velocity.speed) {
+			velocity.speed = yOffset;
+			if (yOffset == 0) return;
+		}
+		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2)); 
 		SetDirection(asin(yOffset / velocity.speed));
-		velocity.speed = sqrt(pow(GetXSpeed(), 2) + pow(yOffset, 2));
 	}
 
 	/**
@@ -229,7 +232,7 @@ int main() {
 	ball.radius = 10;
 	ball.velocity.speed = 200;
 	ball.velocity.direction = PI * 0.75;
-	ball.friction = 0.025;
+	ball.friction = 0.0;
 	Ball ballInit = ball;
 
 	// Initialize the leftPaddle member
@@ -310,21 +313,24 @@ int main() {
 
 		// Move left paddle up
 		if (IsKeyDown(KEY_W))
-			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed); 
+			leftPaddle.SetYSpeed(-leftPaddle.aimYSpeed);
 		// Move left paddle down
 		else if (IsKeyDown(KEY_S))
 			leftPaddle.SetYSpeed(leftPaddle.aimYSpeed);
+		else leftPaddle.SetYSpeed(0);
+
 		// Swing the paddle
 		if (IsKeyPressed(KEY_D)) { /** Code to be added to swing the paddle **/ }
 		// Hold paddle back
 		if (IsKeyDown(KEY_A)) { /** Code to be added to wind back the paddle **/ }
 
 		// Move right paddle up
-		if (IsKeyDown(KEY_UP)) 
+		if (IsKeyDown(KEY_UP))
 			rightPaddle.SetYSpeed(-rightPaddle.aimYSpeed);
 		// Move right paddle down
-		else if (IsKeyDown(KEY_DOWN)) 
+		else if (IsKeyDown(KEY_DOWN))
 			rightPaddle.SetYSpeed(rightPaddle.aimYSpeed);
+		else rightPaddle.SetYSpeed(0);
 		
 		// Swing right paddle
 		if (IsKeyPressed(KEY_LEFT)) { /** Code to be added to swing the paddle **/ }
